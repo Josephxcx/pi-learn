@@ -14,7 +14,12 @@
     "mermaid",
     "svg"
   ],
-  "author": "Joseph",
+  "author": "Josephxcx",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Josephxcx/pi-learn.git"
+  },
+  "homepage": "https://github.com/Josephxcx/pi-learn#readme",
   "license": "MIT",
   "pi": {
     "extensions": [

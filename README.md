@@ -10,8 +10,8 @@ An interactive, high-retention 1-to-1 learning package for the **[Pi coding agen
 
 ### Install directly via Pi CLI:
 ```bash
-# From GitHub (once published)
-pi install git:github.com/YOUR_USERNAME/pi-learn
+# Install package from GitHub
+pi install git:github.com/Josephxcx/pi-learn
 
 # Or from local clone
 pi install /path/to/pi-learn
@@ -19,7 +19,7 @@ pi install /path/to/pi-learn
 
 ### Try without installing:
 ```bash
-pi -e git:github.com/YOUR_USERNAME/pi-learn
+pi -e git:github.com/Josephxcx/pi-learn
 ```
 
 ---
