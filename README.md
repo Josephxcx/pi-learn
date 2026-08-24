@@ -31,6 +31,31 @@ pi -e git:github.com/Josephxcx/pi-learn
 
 ---
 
+## 🖥️ The Recommended Setup: Side-by-Side Learning
+
+*Put your terminal on the left and Obsidian on the right for a live visual learning dashboard:*
+
+```text
+┌──────────────────────────────┬──────────────────────────────┐
+│   TERMINAL (Pi Tutor)        │   OBSIDIAN (Live Notes)      │
+│                              │                              │
+│  🧠 Quick Check (Step 1):    │  # Photosynthesis Basics     │
+│  Where does light absorption │  🗺️ Visual Learning Map     │
+│  take place in the cell?     │  Light Reaction ➔ Sugar      │
+│                              │                              │
+│  [A] Mitochondria            │  ### 📌 Step 1: Chloroplasts │
+│  [B] Chloroplasts  ◄ (Enter) │  6CO₂ + 6H₂O ➔ C₆H₁₂O₆ + 6O₂ │
+│                              │  ![[assets/chloroplast.svg]] │
+│  ✅ Correct! Advancing...     │  ✅ Active Recall: Mastered  │
+└──────────────────────────────┴──────────────────────────────┘
+```
+
+### How Live Updating Works:
+* **Zero manual note-taking:** As you answer questions in the terminal, Pi automatically formats and updates your notes, draws flowcharts, and saves diagrams directly into Obsidian in real time.
+* **Instant viewer command:** Type `/md-view` in Pi at any time to open your active lesson note directly in Obsidian.
+
+---
+
 ## 🧠 The Pedagogical Philosophy
 
 *Most courses and videos are one-size-fits-all—they're either too basic and waste your time, or too fast and leave you confused. `pi-learn` calibrates every lesson to start right at the exact edge of your current understanding.*
