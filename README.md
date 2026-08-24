@@ -33,7 +33,9 @@ pi -e git:github.com/Josephxcx/pi-learn
 
 ## 🖥️ The Recommended Setup: Side-by-Side Learning
 
-*Put your terminal on the left and Obsidian on the right for a live visual learning dashboard:*
+*Put your terminal on the left and [Obsidian](https://obsidian.md/download) on the right for a live visual learning dashboard:*
+
+> **What is Obsidian?** [Obsidian](https://obsidian.md/download) is a popular, free note-taking app that runs locally on your computer. It automatically renders live math formulas ($$\dots$$), interactive flowcharts, and vector diagrams with zero setup.
 
 ```text
 ┌──────────────────────────────┬──────────────────────────────┐
@@ -51,8 +53,38 @@ pi -e git:github.com/Josephxcx/pi-learn
 ```
 
 ### How Live Updating Works:
-* **Zero manual note-taking:** As you answer questions in the terminal, Pi automatically formats and updates your notes, draws flowcharts, and saves diagrams directly into Obsidian in real time.
+* **Zero manual note-taking:** As you answer questions in the terminal, Pi automatically formats and updates your notes, draws flowcharts, and saves diagrams directly into [Obsidian](https://obsidian.md/download) in real time.
 * **Instant viewer command:** Type `/md-view` in Pi at any time to open your active lesson note directly in Obsidian.
+
+---
+
+## 📝 Automated Note Structure
+
+*Every lesson generates a cleanly formatted, permanent study note with a predictable layout:*
+
+```text
+┌─────────────────────────────────────────────────────────────┐
+│ 1. Metadata Header (Topic, date, subject tags, status)      │
+├─────────────────────────────────────────────────────────────┤
+│ 2. 🗺️ Visual Roadmap (Interactive Mermaid flowchart)       │
+├─────────────────────────────────────────────────────────────┤
+│ 3. 📌 Step-by-Step Explanations:                            │
+│    • Intuitive analogies & definitions                      │
+│    • Formatted math equations ($$ \dots $$)                 │
+│    • 🖼️ Embedded vector diagrams (![[assets/image.svg]])    │
+│    • 🧪 Active Recall Quiz logs (Question, Answer, Insight) │
+└─────────────────────────────────────────────────────────────┘
+```
+
+---
+
+## 📂 Do I have to use Obsidian? (File Compatibility)
+
+*Your notes are 100% open, local files that you own forever.*
+
+* **Universal Open Formats:** All notes are saved as standard **Markdown (`.md`)** files, and all diagrams are saved as standard **SVG (`.svg`)** and **PNG (`.png`)** image files in your local folders.
+* **Other Editors:** While [Obsidian](https://obsidian.md/download) is recommended for its out-of-the-box live rendering of LaTeX math and Mermaid diagrams, your notes are plain text and can be opened in any text editor or Markdown viewer (such as VS Code, Typora, MarkText, or standard text tools).
+* **Platform Support:** Built and tested with the Pi agent harness on Linux. Designed around portable POSIX standards and standard Markdown conventions for cross-platform compatibility across Linux, macOS, and Windows.
 
 ---
 
