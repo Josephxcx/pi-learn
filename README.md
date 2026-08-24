@@ -113,6 +113,21 @@ flowchart LR
 ### Phase 1: Probe (Knowledge Calibration)
 *Pi asks you a few quick multiple-choice questions to see what you already know and find the exact starting point for your lesson.*
 
+```text
+┌── 🧠 [Diagnostic Probe 1/3: Plant Nutrition] ──────────────────────────┐
+│                                                                        │
+│  Which of the following pairs contains ONLY essential micronutrients?  │
+│                                                                        │
+│    ○ A) Fe and K                                                       │
+│    ◉ B) Ni and Zn   ◄ (Press Enter to Select)                          │
+│    ○ C) N and Cu                                                       │
+│    ○ D) Ca and Mg                                                      │
+│    ○ 🤷 I don't know / Explain this                                    │
+│    ○ 💬 Type a custom answer / note                                    │
+│                                                                        │
+└────────────────────────────────────────────────────────────────────────┘
+```
+
 * **Interactive Diagnostic MCQs:** Prompts you with selectable questions directly in the terminal TUI using your arrow keys and Enter.
 * **Knowledge Boundary Discovery:** Binary-searches the frontier of your prerequisite understanding across all concept strands the target topic depends on, eliminating assumptions.
 
@@ -121,14 +136,49 @@ flowchart LR
 ### Phase 2: Plan (DAG Roadmap & Verification)
 *Pi designs a clear visual roadmap showing every step needed to get from where you are right now to complete mastery of the topic.*
 
+#### 🗺️ Generated Dependency Graph (DAG) Output:
+```mermaid
+flowchart TD
+    classDef gap fill:#fef3c7,stroke:#f59e0b,stroke-width:2px;
+    classDef mastered fill:#dcfce7,stroke:#16a34a,stroke-width:2px;
+    classDef step fill:#e0f2fe,stroke:#0284c7,stroke-width:2px;
+
+    Start([Learner Baseline Probed]):::mastered --> Node1
+    
+    subgraph Progression [Planned Reasoning Chain]
+        Node1["Step 1: Core Physical Mechanics<br><i>(Addressing Identified Gap)</i>"]:::gap
+        Node2["Step 2: Mathematical Formulation<br><i>(LaTeX Definitions & Equations)</i>"]:::step
+        Node3["Step 3: Applied Diagnostics & Systems"]:::step
+    end
+
+    Node1 --> Node2
+    Node2 --> Node3
+    Node3 --> Goal([🎯 Complete Mastery]):::mastered
+```
+
 * **Dependency Graph (DAG):** Generates a Directed Acyclic Graph (DAG) of minimal, atomic reasoning steps bridging your current baseline to target mastery.
-* **Mermaid Flowchart Rendering:** Displays the visual roadmap both in the terminal and inside your linked Obsidian notes so expectations are transparent.
+* **Mermaid Flowchart Rendering:** Displays the visual roadmap both in the terminal and inside your linked [Obsidian](https://obsidian.md/download) notes so expectations are transparent.
 * **Fact-Checking Verification:** Spawns background verification to double-check technical, mathematical, or scientific claims before teaching starts.
 
 ---
 
 ### Phase 3: Teach (Single-Step Traversal & Active Recall)
 *Pi walks through the lesson one small idea at a time, generates clean visual diagrams, and makes sure each step clicks before moving forward.*
+
+#### 📖 Rendered Lesson Node & Visual Output in Notes:
+
+> ### 📌 Step 1: Photolysis & The Z-Scheme
+>
+> The light-dependent reactions convert photon energy into chemical energy:
+> $$\text{Photolysis: } 2\text{H}_2\text{O} \longrightarrow \text{O}_2 + 4\text{H}^+ + 4e^-$$
+>
+> #### 🖼️ Generated Diagram:
+> ![Sample AI-Generated Diagram](assets/demo-visual.svg)
+>
+> #### 🧪 Active Recall Check:
+> > **Q:** Where does water photolysis take place during the light reaction?  
+> > **Your Answer:** Photosystem II (P680) in thylakoid membrane ✅  
+> > **Key Insight:** Water splitting provides the electrons that drive the Z-scheme.
 
 * **One Atomic Step at a Time:** Prevents standard LLM walls of text. Explanations combine intuitive physical analogies with formal LaTeX mathematics ($$\dots$$).
 * **Self-Evaluating SVG Visuals:** Generates clean vector diagrams, automatically rasterizes 1200px PNG previews with `rsvg-convert`, visually inspects them for formatting errors, and embeds verified graphics into your notes.
