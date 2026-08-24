@@ -1,0 +1,107 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 620" width="100%" height="100%">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0f172a"/>
+      <stop offset="100%" stop-color="#1e293b"/>
+    </linearGradient>
+    <linearGradient id="stemGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#15803d"/>
+      <stop offset="50%" stop-color="#22c55e"/>
+      <stop offset="100%" stop-color="#166534"/>
+    </linearGradient>
+    <filter id="shadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="4" stdDeviation="6" flood-opacity="0.4"/>
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect width="900" height="620" fill="url(#bgGrad)" rx="16"/>
+
+  <!-- Title -->
+  <text x="450" y="42" fill="#f8fafc" font-size="22" font-weight="bold" font-family="system-ui, sans-serif" text-anchor="middle">
+    Plant Nutrient Mobility &amp; Deficiency Spatial Zones
+  </text>
+  <text x="450" y="68" fill="#94a3b8" font-size="13" font-family="system-ui, sans-serif" text-anchor="middle">
+    Phloem translocation mechanics dictates where symptoms physically appear first
+  </text>
+
+  <!-- Central Plant Graphic -->
+  <g transform="translate(340, 100)">
+    <!-- Soil Line -->
+    <rect x="-100" y="440" width="380" height="12" fill="#78350f" rx="4"/>
+    <text x="90" y="470" fill="#b45309" font-size="12" font-family="system-ui, sans-serif" text-anchor="middle" font-weight="bold">SOIL / ROOT ZONE (Xylem Uptake)</text>
+
+    <!-- Main Stem -->
+    <rect x="80" y="50" width="20" height="390" fill="url(#stemGrad)" rx="6"/>
+
+    <!-- Terminal Bud (Top) -->
+    <circle cx="90" cy="45" r="18" fill="#ef4444" filter="url(#shadow)"/>
+    <path d="M 90 22 C 78 35, 78 50, 90 60 C 102 50, 102 35, 90 22 Z" fill="#22c55e"/>
+
+    <!-- Young Leaves (Upper) -->
+    <!-- Left young leaf -->
+    <path d="M 80 120 C 30 110, 10 90, 0 70 C 25 80, 60 95, 80 120 Z" fill="#84cc16"/>
+    <!-- Right young leaf -->
+    <path d="M 100 120 C 150 110, 170 90, 180 70 C 155 80, 120 95, 100 120 Z" fill="#84cc16"/>
+
+    <!-- Middle Leaves -->
+    <!-- Left mid leaf -->
+    <path d="M 80 220 C 15 210, -15 185, -30 160 C 5 175, 50 195, 80 220 Z" fill="#eab308"/>
+    <!-- Right mid leaf -->
+    <path d="M 100 220 C 165 210, 195 185, 210 160 C 175 175, 130 195, 100 220 Z" fill="#eab308"/>
+
+    <!-- Older Leaves (Lower) -->
+    <!-- Left old leaf -->
+    <path d="M 80 340 C 0 330, -40 300, -60 270 C -15 290, 40 315, 80 340 Z" fill="#f97316"/>
+    <!-- Right old leaf -->
+    <path d="M 100 340 C 180 330, 220 300, 240 270 C 195 290, 140 315, 100 340 Z" fill="#f97316"/>
+  </g>
+
+  <!-- Zone 1: Terminal Buds (Immobile) -->
+  <g transform="translate(40, 105)" filter="url(#shadow)">
+    <rect width="250" height="90" fill="#1e293b" stroke="#ef4444" stroke-width="2" rx="10"/>
+    <text x="15" y="28" fill="#f87171" font-size="14" font-weight="bold" font-family="system-ui, sans-serif">1. TERMINAL BUDS (IMMOBILE)</text>
+    <text x="15" y="52" fill="#ffffff" font-size="18" font-weight="bold" font-family="system-ui, sans-serif">Ca, B</text>
+    <text x="15" y="74" fill="#94a3b8" font-size="11" font-family="system-ui, sans-serif">Cannot be mobilized from old tissues</text>
+    <!-- Pointer line -->
+    <line x1="250" y1="45" x2="385" y2="145" stroke="#ef4444" stroke-width="2" stroke-dasharray="4"/>
+  </g>
+
+  <!-- Zone 2: Young Leaves (Less Mobile) -->
+  <g transform="translate(610, 160)" filter="url(#shadow)">
+    <rect width="250" height="90" fill="#1e293b" stroke="#a3e635" stroke-width="2" rx="10"/>
+    <text x="15" y="28" fill="#a3e635" font-size="14" font-weight="bold" font-family="system-ui, sans-serif">2. YOUNG LEAVES (LESS MOBILE)</text>
+    <text x="15" y="52" fill="#ffffff" font-size="18" font-weight="bold" font-family="system-ui, sans-serif">Fe, Mn, Cu, S</text>
+    <text x="15" y="74" fill="#94a3b8" font-size="11" font-family="system-ui, sans-serif">Slight phloem mobility</text>
+    <!-- Pointer line -->
+    <line x1="0" y1="45" x2="-140" y2="55" stroke="#a3e635" stroke-width="2" stroke-dasharray="4"/>
+  </g>
+
+  <!-- Zone 3: Middle Leaves (Moderately Mobile) -->
+  <g transform="translate(40, 275)" filter="url(#shadow)">
+    <rect width="250" height="85" fill="#1e293b" stroke="#eab308" stroke-width="2" rx="10"/>
+    <text x="15" y="26" fill="#facc15" font-size="14" font-weight="bold" font-family="system-ui, sans-serif">3. MIDDLE LEAVES (MODERATE)</text>
+    <text x="15" y="50" fill="#ffffff" font-size="18" font-weight="bold" font-family="system-ui, sans-serif">Zn</text>
+    <text x="15" y="70" fill="#94a3b8" font-size="11" font-family="system-ui, sans-serif">Intermediate symptoms (interveinal)</text>
+    <!-- Pointer line -->
+    <line x1="250" y1="42" x2="350" y2="45" stroke="#eab308" stroke-width="2" stroke-dasharray="4"/>
+  </g>
+
+  <!-- Zone 4: Older / Lower Leaves (Highly Mobile) -->
+  <g transform="translate(610, 375)" filter="url(#shadow)">
+    <rect width="250" height="95" fill="#1e293b" stroke="#f97316" stroke-width="2" rx="10"/>
+    <text x="15" y="28" fill="#fb923c" font-size="14" font-weight="bold" font-family="system-ui, sans-serif">4. OLDER LEAVES (HIGHLY MOBILE)</text>
+    <text x="15" y="54" fill="#ffffff" font-size="18" font-weight="bold" font-family="system-ui, sans-serif">N, P, K, Mg, Mo</text>
+    <text x="15" y="76" fill="#94a3b8" font-size="11" font-family="system-ui, sans-serif">Translocated upward to feed new growth</text>
+    <!-- Pointer line -->
+    <line x1="0" y1="47" x2="-140" y2="65" stroke="#f97316" stroke-width="2" stroke-dasharray="4"/>
+  </g>
+
+  <!-- Key Takeaway Footnote -->
+  <g transform="translate(100, 545)">
+    <rect width="700" height="48" fill="#0f172a" stroke="#334155" stroke-width="1" rx="8"/>
+    <text x="350" y="29" fill="#38bdf8" font-size="13" font-weight="bold" font-family="system-ui, sans-serif" text-anchor="middle">
+      🔑 Core Rule: Mobile elements move UP to save growing tips → Old leaves suffer first!
+    </text>
+  </g>
+</svg>

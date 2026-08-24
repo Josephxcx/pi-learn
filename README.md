@@ -136,24 +136,28 @@ flowchart LR
 ### Phase 2: Plan (DAG Roadmap & Verification)
 *Pi designs a clear visual roadmap showing every step needed to get from where you are right now to complete mastery of the topic.*
 
-#### 🗺️ Generated Dependency Graph (DAG) Output:
+#### 🗺️ Real Roadmap Output from an Active Session:
 ```mermaid
 flowchart TD
-    classDef gap fill:#fef3c7,stroke:#f59e0b,stroke-width:2px;
-    classDef mastered fill:#dcfce7,stroke:#16a34a,stroke-width:2px;
-    classDef step fill:#e0f2fe,stroke:#0284c7,stroke-width:2px;
+    classDef gap fill:#ffeedd,stroke:#e06666,stroke-width:2px;
+    classDef mastered fill:#e6f4ea,stroke:#34a853,stroke-width:2px;
+    classDef step fill:#e8f0fe,stroke:#4285f4,stroke-width:2px;
 
     Start([Learner Baseline Probed]):::mastered --> Node1
     
-    subgraph Progression [Planned Reasoning Chain]
-        Node1["Step 1: Core Physical Mechanics<br><i>(Addressing Identified Gap)</i>"]:::gap
-        Node2["Step 2: Mathematical Formulation<br><i>(LaTeX Definitions & Equations)</i>"]:::step
-        Node3["Step 3: Applied Diagnostics & Systems"]:::step
+    subgraph Core_Progression [Structured Learning Arc]
+        Node1["Step 1: Plant Vascular Highway & Mobility Rules<br><i>(Addressing Identified Gap)</i>"]:::gap
+        Node2["Step 2: Complete Spatial Diagnostic Key<br><i>(Chlorosis vs Anthocyanin vs Scorch)</i>"]:::step
+        Node3["Step 3: Nitrogen Transformations & Fertilizer Chemistry<br><i>(Urea, Biuret, Nitrification, Ratings)</i>"]:::step
+        Node4["Step 4: Acid Soils, P-Fixation & Liming Chemistry<br><i>(Al/Fe Phosphate complexes & Lime requirement)</i>"]:::step
+        Node5["Step 5: Salt-Affected Soils Matrix & Gypsum Calculations<br><i>(Saline vs Sodic vs Saline-Sodic, SAR/ESP)</i>"]:::step
     end
 
     Node1 --> Node2
     Node2 --> Node3
-    Node3 --> Goal([🎯 Complete Mastery]):::mastered
+    Node3 --> Node4
+    Node4 --> Node5
+    Node5 --> Goal([🎯 Topic Mastery]):::mastered
 ```
 
 * **Dependency Graph (DAG):** Generates a Directed Acyclic Graph (DAG) of minimal, atomic reasoning steps bridging your current baseline to target mastery.
@@ -165,20 +169,25 @@ flowchart TD
 ### Phase 3: Teach (Single-Step Traversal & Active Recall)
 *Pi walks through the lesson one small idea at a time, generates clean visual diagrams, and makes sure each step clicks before moving forward.*
 
-#### 📖 Rendered Lesson Node & Visual Output in Notes:
+#### 📖 Real Lesson Node & Embedded Diagram from Notes:
 
-> ### 📌 Step 1: Photolysis & The Z-Scheme
+> ### 📌 Step 1: Plant Vascular Highway & Nutrient Mobility Rules
 >
-> The light-dependent reactions convert photon energy into chemical energy:
-> $$\text{Photolysis: } 2\text{H}_2\text{O} \longrightarrow \text{O}_2 + 4\text{H}^+ + 4e^-$$
+> When soil nutrients run dry, a plant acts like a triage emergency room:
+> $$\text{Root Uptake (Xylem)} \longrightarrow \text{Initial Deposition} \overset{\text{Starvation Crisis}}{\longrightarrow} \text{Phloem Re-translocation}$$
 >
-> #### 🖼️ Generated Diagram:
-> ![Sample AI-Generated Diagram](assets/demo-visual.svg)
+> * **Highly Mobile Elements ($\text{N}, \text{P}, \text{K}, \text{Mg}, \text{Mo}$):**  
+>   The plant dismantles enzymes in its **older, lower leaves** and pumps these elements up through the phloem to protect the growing tip. $\implies$ Symptoms appear on **OLDER leaves first**.
+> * **Completely Immobile Elements ($\text{Ca}, \text{B}$):**  
+>   $\text{Ca}^{2+}$ is physically cemented into cell walls as *calcium pectate* (middle lamella). Once deposited, it cannot move. $\implies$ Symptoms appear at **TERMINAL GROWING BUDS (apical meristems)**.
+>
+> #### 🖼️ Generated Visual Diagram:
+> ![Plant Nutrient Mobility Zones](assets/nutrient-mobility-plant.svg)
 >
 > #### 🧪 Active Recall Check:
-> > **Q:** Where does water photolysis take place during the light reaction?  
-> > **Your Answer:** Photosystem II (P680) in thylakoid membrane ✅  
-> > **Key Insight:** Water splitting provides the electrons that drive the Z-scheme.
+> > **Q:** A tomato crop shows terminal growing tip dieback and blossom-end rot on fruits, while lower mature leaves remain lush green. Which nutrient deficiency is primarily responsible?  
+> > **Your Answer:** C) Calcium (Ca) ✅  
+> > **Key Insight:** Calcium is immobile in phloem (locked in cell walls as calcium pectate), causing deficiency at the terminal growing buds.
 
 * **One Atomic Step at a Time:** Prevents standard LLM walls of text. Explanations combine intuitive physical analogies with formal LaTeX mathematics ($$\dots$$).
 * **Self-Evaluating SVG Visuals:** Generates clean vector diagrams, automatically rasterizes 1200px PNG previews with `rsvg-convert`, visually inspects them for formatting errors, and embeds verified graphics into your notes.

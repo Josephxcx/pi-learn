@@ -1,0 +1,172 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 620" width="100%" height="100%">
+  <defs>
+    <linearGradient id="darkBg3" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0c1222"/>
+      <stop offset="100%" stop-color="#1e293b"/>
+    </linearGradient>
+    <filter id="shadow3" x="-5%" y="-5%" width="110%" height="110%">
+      <feDropShadow dx="0" dy="4" stdDeviation="5" flood-opacity="0.35"/>
+    </filter>
+  </defs>
+
+  <rect width="960" height="620" fill="url(#darkBg3)" rx="14"/>
+
+  <!-- Title -->
+  <text x="480" y="38" fill="#f8fafc" font-size="20" font-weight="bold" font-family="system-ui, sans-serif" text-anchor="middle">
+    Nitrogen Transformations, Hydrolysis &amp; Fertility Benchmarks
+  </text>
+  <text x="480" y="60" fill="#94a3b8" font-size="12" font-family="system-ui, sans-serif" text-anchor="middle">
+    Biochemical pathway of mineralization, nitrification inhibitors, and soil test ratings
+  </text>
+
+  <!-- TOP FLOW: Nitrogen Transformation Chain -->
+  <g transform="translate(30, 80)" filter="url(#shadow3)">
+    <rect width="900" height="230" fill="#1e293b" stroke="#38bdf8" stroke-width="1.5" rx="10"/>
+    <rect x="0" y="0" width="900" height="32" fill="#0284c7" rx="10 10 0 0"/>
+    <text x="450" y="21" fill="#ffffff" font-size="13" font-weight="bold" font-family="system-ui, sans-serif" text-anchor="middle">
+      1. BIOCHEMICAL PATHWAY OF SOIL NITROGEN
+    </text>
+
+    <!-- Node A: Organic N / Urea -->
+    <g transform="translate(25, 48)">
+      <rect width="180" height="155" fill="#0f172a" stroke="#64748b" rx="8"/>
+      <text x="90" y="26" fill="#f8fafc" font-size="13" font-weight="bold" text-anchor="middle">Organic N / Urea</text>
+      <text x="90" y="48" fill="#38bdf8" font-size="11" text-anchor="middle font-family=monospace">CO(NH₂)₂</text>
+      <line x1="15" y1="62" x2="165" y2="62" stroke="#334155"/>
+      <text x="90" y="80" fill="#94a3b8" font-size="11" text-anchor="middle">Soil Urease Enzyme</text>
+      <text x="90" y="98" fill="#cbd5e1" font-size="10" text-anchor="middle">Urea contains 46% N</text>
+      <text x="90" y="116" fill="#facc15" font-size="10" font-weight="bold" text-anchor="middle">Biuret limit &lt; 1.5%</text>
+      <text x="90" y="134" fill="#f87171" font-size="9" text-anchor="middle">Foliar spray &lt; 0.5%</text>
+    </g>
+
+    <!-- Arrow 1 -->
+    <g transform="translate(215, 115)">
+      <line x1="0" y1="0" x2="35" y2="0" stroke="#38bdf8" stroke-width="3"/>
+      <polygon points="35,-6 45,0 35,6" fill="#38bdf8"/>
+      <text x="22" y="-12" fill="#38bdf8" font-size="10" text-anchor="middle" font-weight="bold">Ammonification</text>
+    </g>
+
+    <!-- Node B: Ammonium (NH4+) -->
+    <g transform="translate(265, 48)">
+      <rect width="170" height="155" fill="#0f172a" stroke="#22c55e" rx="8"/>
+      <text x="85" y="26" fill="#4ade80" font-size="14" font-weight="bold" text-anchor="middle">Ammonium (NH₄⁺)</text>
+      <text x="85" y="48" fill="#94a3b8" font-size="11" text-anchor="middle">Cation (Adsorbed on Clay)</text>
+      <line x1="15" y1="62" x2="155" y2="62" stroke="#334155"/>
+      <text x="85" y="82" fill="#cbd5e1" font-size="10" text-anchor="middle">Dominant in flooded rice</text>
+      <text x="85" y="102" fill="#cbd5e1" font-size="10" text-anchor="middle">Resistant to leaching</text>
+      <text x="85" y="128" fill="#f87171" font-size="10" font-weight="bold" text-anchor="middle">Volatilization in alkaline</text>
+    </g>
+
+    <!-- Arrow 2 (Nitrosomonas) -->
+    <g transform="translate(445, 115)">
+      <line x1="0" y1="0" x2="40" y2="0" stroke="#facc15" stroke-width="3"/>
+      <polygon points="40,-6 50,0 40,6" fill="#facc15"/>
+      <text x="25" y="-12" fill="#facc15" font-size="10" text-anchor="middle" font-weight="bold">Nitrosomonas</text>
+      <text x="25" y="18" fill="#94a3b8" font-size="9" text-anchor="middle">2NH₄⁺ + 3O₂</text>
+    </g>
+
+    <!-- Node C: Nitrite (NO2-) -->
+    <g transform="translate(505, 48)">
+      <rect width="160" height="155" fill="#0f172a" stroke="#eab308" rx="8"/>
+      <text x="80" y="26" fill="#facc15" font-size="14" font-weight="bold" text-anchor="middle">Nitrite (NO₂⁻)</text>
+      <text x="80" y="48" fill="#94a3b8" font-size="11" text-anchor="middle">Toxic Intermediate</text>
+      <line x1="15" y1="62" x2="145" y2="62" stroke="#334155"/>
+      <text x="80" y="85" fill="#cbd5e1" font-size="10" text-anchor="middle">Rapidly oxidized</text>
+      <text x="80" y="105" fill="#cbd5e1" font-size="10" text-anchor="middle">Rarely accumulates</text>
+      <text x="80" y="128" fill="#38bdf8" font-size="10" text-anchor="middle">Inhibited by DCD/NCU</text>
+    </g>
+
+    <!-- Arrow 3 (Nitrobacter) -->
+    <g transform="translate(675, 115)">
+      <line x1="0" y1="0" x2="40" y2="0" stroke="#4ade80" stroke-width="3"/>
+      <polygon points="40,-6 50,0 40,6" fill="#4ade80"/>
+      <text x="25" y="-12" fill="#4ade80" font-size="10" text-anchor="middle" font-weight="bold">Nitrobacter</text>
+      <text x="25" y="18" fill="#94a3b8" font-size="9" text-anchor="middle">2NO₂⁻ + O₂</text>
+    </g>
+
+    <!-- Node D: Nitrate (NO3-) -->
+    <g transform="translate(725, 48)">
+      <rect width="150" height="155" fill="#0f172a" stroke="#38bdf8" rx="8"/>
+      <text x="75" y="26" fill="#38bdf8" font-size="14" font-weight="bold" text-anchor="middle">Nitrate (NO₃⁻)</text>
+      <text x="75" y="48" fill="#94a3b8" font-size="11" text-anchor="middle">Anion (Free in Soln)</text>
+      <line x1="15" y1="62" x2="135" y2="62" stroke="#334155"/>
+      <text x="75" y="85" fill="#cbd5e1" font-size="10" text-anchor="middle">Primary uptake form</text>
+      <text x="75" y="105" fill="#f87171" font-size="10" font-weight="bold" text-anchor="middle">High Leaching loss</text>
+      <text x="75" y="128" fill="#f87171" font-size="10" text-anchor="middle">Denitrification (N₂O/N₂)</text>
+    </g>
+  </g>
+
+  <!-- BOTTOM ROW: Ratings & Inhibitors Matrix -->
+  <!-- Box 1: Soil Test Ratings for Available N in India -->
+  <g transform="translate(30, 330)" filter="url(#shadow3)">
+    <rect width="435" height="260" fill="#1e293b" stroke="#f59e0b" stroke-width="1.5" rx="10"/>
+    <rect x="0" y="0" width="435" height="32" fill="#d97706" rx="10 10 0 0"/>
+    <text x="217" y="21" fill="#ffffff" font-size="13" font-weight="bold" text-anchor="middle">
+      2. SOIL TEST RATINGS FOR AVAILABLE N (INDIA)
+    </text>
+
+    <!-- Method description -->
+    <text x="20" y="55" fill="#94a3b8" font-size="11">Standard Method: Alkaline KMnO₄ Method (Subbiah &amp; Asija, 1956)</text>
+
+    <!-- Table Header -->
+    <rect x="20" y="70" width="395" height="28" fill="#0f172a" rx="4"/>
+    <text x="70" y="88" fill="#f8fafc" font-size="11" font-weight="bold">Category</text>
+    <text x="200" y="88" fill="#f8fafc" font-size="11" font-weight="bold">Available N Range</text>
+    <text x="330" y="88" fill="#f8fafc" font-size="11" font-weight="bold">Recommendation</text>
+
+    <!-- Row 1: Low -->
+    <rect x="20" y="104" width="395" height="36" fill="#1e293b" stroke="#334155" rx="4"/>
+    <text x="70" y="126" fill="#ef4444" font-size="12" font-weight="bold">LOW</text>
+    <text x="200" y="126" fill="#ffffff" font-size="12" font-weight="bold">&lt; 280 kg/ha</text>
+    <text x="330" y="126" fill="#cbd5e1" font-size="11">+25% over RDF</text>
+
+    <!-- Row 2: Medium -->
+    <rect x="20" y="146" width="395" height="36" fill="#1e293b" stroke="#334155" rx="4"/>
+    <text x="70" y="168" fill="#facc15" font-size="12" font-weight="bold">MEDIUM</text>
+    <text x="200" y="168" fill="#ffffff" font-size="12" font-weight="bold">280 - 560 kg/ha</text>
+    <text x="330" y="168" fill="#cbd5e1" font-size="11">100% RDF</text>
+
+    <!-- Row 3: High -->
+    <rect x="20" y="188" width="395" height="36" fill="#1e293b" stroke="#334155" rx="4"/>
+    <text x="70" y="210" fill="#4ade80" font-size="12" font-weight="bold">HIGH</text>
+    <text x="200" y="210" fill="#ffffff" font-size="12" font-weight="bold">&gt; 560 kg/ha</text>
+    <text x="330" y="210" fill="#cbd5e1" font-size="11">-25% from RDF</text>
+
+    <text x="217" y="246" fill="#fbbf24" font-size="11" font-weight="bold" text-anchor="middle">
+      ⚠️ Exam Benchmark: Soil N is deficient if &lt; 280 kg/ha
+    </text>
+  </g>
+
+  <!-- Box 2: Nitrification Inhibitors & Efficiency Tools -->
+  <g transform="translate(495, 330)" filter="url(#shadow3)">
+    <rect width="435" height="260" fill="#1e293b" stroke="#a855f7" stroke-width="1.5" rx="10"/>
+    <rect x="0" y="0" width="435" height="32" fill="#9333ea" rx="10 10 0 0"/>
+    <text x="217" y="21" fill="#ffffff" font-size="13" font-weight="bold" text-anchor="middle">
+      3. SLOW-RELEASE FERTILIZERS &amp; INHIBITORS
+    </text>
+
+    <!-- Item 1: Neem-Coated Urea -->
+    <g transform="translate(15, 45)">
+      <rect width="405" height="60" fill="#0f172a" stroke="#334155" rx="6"/>
+      <text x="12" y="20" fill="#4ade80" font-size="12" font-weight="bold">Neem-Coated Urea (NCU) / Karanj Cake</text>
+      <text x="12" y="38" fill="#cbd5e1" font-size="11">Contains natural triterpenes (nimbin, azadirachtin) that inhibit Nitrosomonas.</text>
+      <text x="12" y="52" fill="#94a3b8" font-size="10">Slows nitrification, reduces leaching &amp; denitrification losses.</text>
+    </g>
+
+    <!-- Item 2: Chemical Inhibitors -->
+    <g transform="translate(15, 115)">
+      <rect width="405" height="60" fill="#0f172a" stroke="#334155" rx="6"/>
+      <text x="12" y="20" fill="#c084fc" font-size="12" font-weight="bold">Chemical Nitrification Inhibitors</text>
+      <text x="12" y="38" fill="#cbd5e1" font-size="11">Nitrapyrin (N-Serve), Dicyandiamide (DCD), Thiourea.</text>
+      <text x="12" y="52" fill="#94a3b8" font-size="10">Specifically block the enzymatic activity of Nitrosomonas bacteria.</text>
+    </g>
+
+    <!-- Item 3: Leaf Color Chart -->
+    <g transform="translate(15, 185)">
+      <rect width="405" height="60" fill="#0f172a" stroke="#334155" rx="6"/>
+      <text x="12" y="20" fill="#38bdf8" font-size="12" font-weight="bold">Leaf Color Chart (LCC) Diagnostic</text>
+      <text x="12" y="38" fill="#cbd5e1" font-size="11">Used to guide real-time split top-dressing of N fertilizer (IRRI standard).</text>
+      <text x="12" y="52" fill="#94a3b8" font-size="10">Prevents excessive N application and lodging in rice and wheat.</text>
+    </g>
+  </g>
+</svg>

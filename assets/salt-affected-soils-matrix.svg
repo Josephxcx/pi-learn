@@ -1,0 +1,154 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 620" width="100%" height="100%">
+  <defs>
+    <linearGradient id="darkBg5" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0b1320"/>
+      <stop offset="100%" stop-color="#192231"/>
+    </linearGradient>
+    <filter id="shadow5" x="-5%" y="-5%" width="110%" height="110%">
+      <feDropShadow dx="0" dy="4" stdDeviation="5" flood-opacity="0.35"/>
+    </filter>
+  </defs>
+
+  <rect width="960" height="620" fill="url(#darkBg5)" rx="14"/>
+
+  <!-- Header -->
+  <text x="480" y="38" fill="#f8fafc" font-size="20" font-weight="bold" font-family="system-ui, sans-serif" text-anchor="middle">
+    Classification Matrix of Salt-Affected Problem Soils
+  </text>
+  <text x="480" y="60" fill="#94a3b8" font-size="12" font-family="system-ui, sans-serif" text-anchor="middle">
+    Standard USDA Thresholds: Electrical Conductivity (EC), Exchangeable Sodium (ESP/SAR), and Reclamation
+  </text>
+
+  <!-- MAIN COMPARISON TABLE -->
+  <g transform="translate(30, 80)" filter="url(#shadow5)">
+    <rect width="900" height="340" fill="#1e293b" stroke="#38bdf8" stroke-width="1.5" rx="10"/>
+
+    <!-- Table Header Row -->
+    <rect x="0" y="0" width="900" height="38" fill="#0284c7" rx="10 10 0 0"/>
+    <text x="90" y="24" fill="#ffffff" font-size="12" font-weight="bold" text-anchor="middle">Soil Type</text>
+    <text x="210" y="24" fill="#ffffff" font-size="12" font-weight="bold" text-anchor="middle">EC (dS/m)</text>
+    <text x="310" y="24" fill="#ffffff" font-size="12" font-weight="bold" text-anchor="middle">ESP (%)</text>
+    <text x="400" y="24" fill="#ffffff" font-size="12" font-weight="bold" text-anchor="middle">pH</text>
+    <text x="540" y="24" fill="#ffffff" font-size="12" font-weight="bold" text-anchor="middle">Common Name &amp; Visual</text>
+    <text x="760" y="24" fill="#ffffff" font-size="12" font-weight="bold" text-anchor="middle">Reclamation Method</text>
+
+    <!-- Row 1: Saline Soil -->
+    <g transform="translate(0, 38)">
+      <rect width="900" height="95" fill="#0f172a" stroke="#334155"/>
+      <text x="90" y="32" fill="#38bdf8" font-size="14" font-weight="bold" text-anchor="middle">SALINE</text>
+      <text x="90" y="52" fill="#94a3b8" font-size="11" text-anchor="middle">(Solonchak)</text>
+
+      <!-- Values -->
+      <rect x="170" y="25" width="80" height="32" fill="#1e293b" rx="4"/>
+      <text x="210" y="46" fill="#4ade80" font-size="13" font-weight="bold" text-anchor="middle">&gt; 4.0</text>
+
+      <rect x="270" y="25" width="80" height="32" fill="#1e293b" rx="4"/>
+      <text x="310" y="46" fill="#cbd5e1" font-size="13" font-weight="bold" text-anchor="middle">&lt; 15%</text>
+
+      <rect x="365" y="25" width="70" height="32" fill="#1e293b" rx="4"/>
+      <text x="400" y="46" fill="#cbd5e1" font-size="13" font-weight="bold" text-anchor="middle">&lt; 8.5</text>
+
+      <!-- Details -->
+      <text x="450" y="32" fill="#f8fafc" font-size="12" font-weight="bold">White Alkali</text>
+      <text x="450" y="50" fill="#cbd5e1" font-size="10">White crust of neutral salts (Cl⁻, SO₄²⁻ of Na, Ca, Mg).</text>
+      <text x="450" y="68" fill="#4ade80" font-size="10">Good structure; particles stay flocculated.</text>
+
+      <!-- Reclamation -->
+      <text x="645" y="36" fill="#38bdf8" font-size="12" font-weight="bold">Leaching with Good Water</text>
+      <text x="645" y="54" fill="#cbd5e1" font-size="10">+ Subsurface drainage</text>
+      <text x="645" y="70" fill="#facc15" font-size="9" font-weight="bold">(No chemical amendment needed)</text>
+    </g>
+
+    <!-- Row 2: Sodic / Alkali Soil -->
+    <g transform="translate(0, 133)">
+      <rect width="900" height="105" fill="#1e293b" stroke="#334155"/>
+      <text x="90" y="35" fill="#ef4444" font-size="14" font-weight="bold" text-anchor="middle">SODIC / ALKALI</text>
+      <text x="90" y="55" fill="#94a3b8" font-size="11" text-anchor="middle">(Solonetz)</text>
+
+      <!-- Values -->
+      <rect x="170" y="28" width="80" height="32" fill="#0f172a" rx="4"/>
+      <text x="210" y="49" fill="#cbd5e1" font-size="13" font-weight="bold" text-anchor="middle">&lt; 4.0</text>
+
+      <rect x="270" y="28" width="80" height="32" fill="#0f172a" rx="4"/>
+      <text x="310" y="49" fill="#ef4444" font-size="13" font-weight="bold" text-anchor="middle">&gt; 15%</text>
+
+      <rect x="365" y="28" width="70" height="32" fill="#0f172a" rx="4"/>
+      <text x="400" y="49" fill="#ef4444" font-size="13" font-weight="bold" text-anchor="middle">&gt; 8.5 - 10</text>
+
+      <!-- Details -->
+      <text x="450" y="32" fill="#f8fafc" font-size="12" font-weight="bold">Black Alkali</text>
+      <text x="450" y="50" fill="#cbd5e1" font-size="10">High Na₂CO₃/NaHCO₃ dissolves organic matter (black crust).</text>
+      <text x="450" y="68" fill="#f87171" font-size="10">Severe deflocculation &amp; dispersion; zero aeration/drainage.</text>
+
+      <!-- Reclamation -->
+      <text x="645" y="36" fill="#f43f5e" font-size="12" font-weight="bold">Gypsum (CaSO₄·2H₂O)</text>
+      <text x="645" y="54" fill="#cbd5e1" font-size="10">Replaces exchangeable Na⁺ with Ca²⁺</text>
+      <text x="645" y="70" fill="#a855f7" font-size="10">Or Sulfur / Pyrites in calcareous soils</text>
+    </g>
+
+    <!-- Row 3: Saline-Sodic Soil -->
+    <g transform="translate(0, 238)">
+      <rect width="900" height="102" fill="#0f172a" stroke="#334155" rx="0 0 10 10"/>
+      <text x="90" y="38" fill="#facc15" font-size="14" font-weight="bold" text-anchor="middle">SALINE-SODIC</text>
+
+      <!-- Values -->
+      <rect x="170" y="28" width="80" height="32" fill="#1e293b" rx="4"/>
+      <text x="210" y="49" fill="#4ade80" font-size="13" font-weight="bold" text-anchor="middle">&gt; 4.0</text>
+
+      <rect x="270" y="28" width="80" height="32" fill="#1e293b" rx="4"/>
+      <text x="310" y="49" fill="#ef4444" font-size="13" font-weight="bold" text-anchor="middle">&gt; 15%</text>
+
+      <rect x="365" y="28" width="70" height="32" fill="#1e293b" rx="4"/>
+      <text x="400" y="49" fill="#facc15" font-size="13" font-weight="bold" text-anchor="middle">≈ 8.5</text>
+
+      <!-- Details -->
+      <text x="450" y="34" fill="#f8fafc" font-size="12" font-weight="bold">Both high salts and high exchangeable Na⁺</text>
+      <text x="450" y="52" fill="#cbd5e1" font-size="10">Excess neutral salts keep soil temporarily flocculated.</text>
+      <text x="450" y="70" fill="#fbbf24" font-size="10" font-weight="bold">Danger: Leaching first without gypsum will convert it to Sodic!</text>
+
+      <!-- Reclamation -->
+      <text x="645" y="36" fill="#facc15" font-size="12" font-weight="bold">1. Apply Gypsum FIRST</text>
+      <text x="645" y="54" fill="#cbd5e1" font-size="10">2. Follow with Leaching</text>
+    </g>
+  </g>
+
+  <!-- BOTTOM ROW: Formulas & Chemical Equation -->
+  <g transform="translate(30, 435)" filter="url(#shadow5)">
+    <!-- Box 1: SAR Formula -->
+    <g transform="translate(0, 0)">
+      <rect width="435" height="160" fill="#1e293b" stroke="#38bdf8" stroke-width="1.5" rx="8"/>
+      <rect x="0" y="0" width="435" height="30" fill="#0284c7" rx="8 8 0 0"/>
+      <text x="217" y="20" fill="#ffffff" font-size="12" font-weight="bold" text-anchor="middle">
+        SODIUM ADSORPTION RATIO (SAR) EQUATION
+      </text>
+      <text x="217" y="65" fill="#38bdf8" font-size="16" font-weight="bold" font-family="monospace" text-anchor="middle">
+        SAR = [Na⁺] / √(([Ca²⁺] + [Mg²⁺]) / 2)
+      </text>
+      <text x="217" y="95" fill="#cbd5e1" font-size="11" text-anchor="middle">All cation concentrations expressed in meq/L</text>
+      <text x="217" y="125" fill="#facc15" font-size="11" font-weight="bold" text-anchor="middle">
+        Threshold: SAR &gt; 13 corresponds to ESP &gt; 15% (Sodic Hazard)
+      </text>
+    </g>
+
+    <!-- Box 2: Gypsum Chemical Equation -->
+    <g transform="translate(465, 0)">
+      <rect width="435" height="160" fill="#1e293b" stroke="#22c55e" stroke-width="1.5" rx="8"/>
+      <rect x="0" y="0" width="435" height="30" fill="#16a34a" rx="8 8 0 0"/>
+      <text x="217" y="20" fill="#ffffff" font-size="12" font-weight="bold" text-anchor="middle">
+        GYPSUM RECLAMATION MECHANISM
+      </text>
+      <text x="217" y="60" fill="#4ade80" font-size="12" font-weight="bold" font-family="monospace" text-anchor="middle">
+        2Na⁺-[Clay] + CaSO₄·2H₂O ➔ Ca²⁺-[Clay] + Na₂SO₄↓
+      </text>
+      <text x="217" y="90" fill="#cbd5e1" font-size="10" text-anchor="middle">
+        1. Ca²⁺ displaces toxic Na⁺ on the exchange complex.
+      </text>
+      <text x="217" y="108" fill="#cbd5e1" font-size="10" text-anchor="middle">
+        2. Soluble Na₂SO₄ is flushed out through drainage.
+      </text>
+      <text x="217" y="132" fill="#38bdf8" font-size="11" font-weight="bold" text-anchor="middle">
+        Restores soil porosity, water infiltration, and aeration!
+      </text>
+    </g>
+  </g>
+</svg>

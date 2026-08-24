@@ -1,0 +1,132 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 620" width="100%" height="100%">
+  <defs>
+    <linearGradient id="darkBg4" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0a0f1d"/>
+      <stop offset="100%" stop-color="#1e1e38"/>
+    </linearGradient>
+    <filter id="shadow4" x="-5%" y="-5%" width="110%" height="110%">
+      <feDropShadow dx="0" dy="4" stdDeviation="5" flood-opacity="0.35"/>
+    </filter>
+  </defs>
+
+  <rect width="960" height="620" fill="url(#darkBg4)" rx="14"/>
+
+  <!-- Title -->
+  <text x="480" y="38" fill="#f8fafc" font-size="20" font-weight="bold" font-family="system-ui, sans-serif" text-anchor="middle">
+    Acid Soils Chemistry: Phosphorus Fixation &amp; Liming Dynamics
+  </text>
+  <text x="480" y="60" fill="#94a3b8" font-size="12" font-family="system-ui, sans-serif" text-anchor="middle">
+    Why acidic soils are universally deficient in available P and how liming restores nutrient equilibrium
+  </text>
+
+  <!-- LEFT BOX: The P-Fixation Mechanism in Acid Soils -->
+  <g transform="translate(30, 80)" filter="url(#shadow4)">
+    <rect width="435" height="500" fill="#1e293b" stroke="#f43f5e" stroke-width="1.5" rx="10"/>
+    <rect x="0" y="0" width="435" height="34" fill="#e11d48" rx="10 10 0 0"/>
+    <text x="217" y="22" fill="#ffffff" font-size="13" font-weight="bold" text-anchor="middle">
+      1. PHOSPHORUS FIXATION AT LOW pH (&lt; 5.5)
+    </text>
+
+    <!-- Al Reaction Block -->
+    <g transform="translate(15, 48)">
+      <rect width="405" height="100" fill="#0f172a" stroke="#334155" rx="8"/>
+      <text x="12" y="22" fill="#f43f5e" font-size="12" font-weight="bold">Aluminum (Al³⁺) Fixation Precipitation</text>
+      <text x="12" y="44" fill="#38bdf8" font-size="11" font-family="monospace">Al³⁺ + H₂PO₄⁻ + 2H₂O ➔ Al(OH)₂H₂PO₄ ↓ (Variscite) + 2H⁺</text>
+      <text x="12" y="70" fill="#cbd5e1" font-size="10">Active soluble phosphate is converted into insoluble Variscite precipitate.</text>
+      <text x="12" y="88" fill="#fda4af" font-size="10" font-weight="bold">Toxicity: Al³⁺ burns root tips ("stubby roots")</text>
+    </g>
+
+    <!-- Fe Reaction Block -->
+    <g transform="translate(15, 158)">
+      <rect width="405" height="100" fill="#0f172a" stroke="#334155" rx="8"/>
+      <text x="12" y="22" fill="#fb923c" font-size="12" font-weight="bold">Iron (Fe³⁺) Fixation Precipitation</text>
+      <text x="12" y="44" fill="#38bdf8" font-size="11" font-family="monospace">Fe³⁺ + H₂PO₄⁻ + 2H₂O ➔ Fe(OH)₂H₂PO₄ ↓ (Strengite) + 2H⁺</text>
+      <text x="12" y="70" fill="#cbd5e1" font-size="10">Phosphate forms Strengite with iron oxides/hydroxides (goethite/hematite).</text>
+      <text x="12" y="88" fill="#fdba74" font-size="10" font-weight="bold">Key Takeaway: Total P is high, but Available P is near zero!</text>
+    </g>
+
+    <!-- Extraction Methods Box -->
+    <g transform="translate(15, 268)">
+      <rect width="405" height="215" fill="#0f172a" stroke="#a855f7" rx="8"/>
+      <text x="202" y="22" fill="#c084fc" font-size="12" font-weight="bold" text-anchor="middle">SOIL TEST PHOSPHORUS EXTRACTANTS</text>
+      <line x1="15" y1="32" x2="390" y2="32" stroke="#334155"/>
+
+      <!-- Bray Method -->
+      <rect x="12" y="42" width="380" height="75" fill="#1e293b" rx="6"/>
+      <text x="20" y="62" fill="#38bdf8" font-size="12" font-weight="bold">Bray &amp; Kurtz No. 1 Method</text>
+      <text x="20" y="80" fill="#facc15" font-size="11" font-weight="bold">Reagent: 0.03 N NH₄F + 0.025 N HCl</text>
+      <text x="20" y="98" fill="#cbd5e1" font-size="10">Target Soils: ACID SOILS (pH &lt; 6.5) — Fluoride dissolves Al-P</text>
+
+      <!-- Olsen Method -->
+      <rect x="12" y="125" width="380" height="75" fill="#1e293b" rx="6"/>
+      <text x="20" y="145" fill="#4ade80" font-size="12" font-weight="bold">Olsen's Method</text>
+      <text x="20" y="163" fill="#facc15" font-size="11" font-weight="bold">Reagent: 0.5 M NaHCO₃ (pH 8.5)</text>
+      <text x="20" y="181" fill="#cbd5e1" font-size="10">Target Soils: NEUTRAL TO ALKALINE / CALCAREOUS SOILS (pH &gt; 6.5)</text>
+    </g>
+  </g>
+
+  <!-- RIGHT BOX: Acid Soil Reclamation & Liming Values -->
+  <g transform="translate(495, 80)" filter="url(#shadow4)">
+    <rect width="435" height="500" fill="#1e293b" stroke="#22c55e" stroke-width="1.5" rx="10"/>
+    <rect x="0" y="0" width="435" height="34" fill="#16a34a" rx="10 10 0 0"/>
+    <text x="217" y="22" fill="#ffffff" font-size="13" font-weight="bold" text-anchor="middle">
+      2. LIMING DYNAMICS &amp; NEUTRALIZING VALUES
+    </text>
+
+    <!-- Liming Mechanism -->
+    <g transform="translate(15, 48)">
+      <rect width="405" height="120" fill="#0f172a" stroke="#334155" rx="8"/>
+      <text x="12" y="22" fill="#4ade80" font-size="12" font-weight="bold">Chemical Neutralization of Toxic Al³⁺ &amp; H⁺</text>
+      <text x="12" y="44" fill="#f8fafc" font-size="11" font-family="monospace">CaCO₃ + H₂O + CO₂ ➔ Ca(HCO₃)₂</text>
+      <text x="12" y="66" fill="#38bdf8" font-size="11" font-family="monospace">[Clay]=2Al³⁺ + 3Ca(HCO₃)₂ ➔ [Clay]=3Ca²⁺ + 2Al(OH)₃↓ + 6CO₂</text>
+      <text x="12" y="92" fill="#cbd5e1" font-size="10">Insoluble Al(OH)₃ gibbsite precipitate forms, detoxifying soil solution.</text>
+      <text x="12" y="108" fill="#4ade80" font-size="10" font-weight="bold">Optimal pH for max P availability = 6.0 to 7.0</text>
+    </g>
+
+    <!-- Neutralizing Value / CCE Table -->
+    <g transform="translate(15, 180)">
+      <rect width="405" height="305" fill="#0f172a" stroke="#334155" rx="8"/>
+      <text x="202" y="24" fill="#facc15" font-size="12" font-weight="bold" text-anchor="middle">CALCIUM CARBONATE EQUIVALENT (CCE / NV)</text>
+
+      <rect x="15" y="38" width="375" height="26" fill="#1e293b" rx="4"/>
+      <text x="30" y="55" fill="#94a3b8" font-size="11" font-weight="bold">Liming Material</text>
+      <text x="230" y="55" fill="#94a3b8" font-size="11" font-weight="bold">Formula</text>
+      <text x="340" y="55" fill="#94a3b8" font-size="11" font-weight="bold">CCE (%)</text>
+
+      <!-- CaO -->
+      <rect x="15" y="68" width="375" height="32" fill="#0f172a" stroke="#334155" rx="4"/>
+      <text x="30" y="89" fill="#f8fafc" font-size="11">Burnt Lime / Quicklime</text>
+      <text x="230" y="89" fill="#38bdf8" font-size="11">CaO</text>
+      <text x="340" y="89" fill="#4ade80" font-size="12" font-weight="bold">179%</text>
+
+      <!-- Ca(OH)2 -->
+      <rect x="15" y="104" width="375" height="32" fill="#0f172a" stroke="#334155" rx="4"/>
+      <text x="30" y="125" fill="#f8fafc" font-size="11">Slaked / Hydrated Lime</text>
+      <text x="230" y="125" fill="#38bdf8" font-size="11">Ca(OH)₂</text>
+      <text x="340" y="125" fill="#4ade80" font-size="12" font-weight="bold">136%</text>
+
+      <!-- Dolomite -->
+      <rect x="15" y="140" width="375" height="32" fill="#0f172a" stroke="#334155" rx="4"/>
+      <text x="30" y="161" fill="#f8fafc" font-size="11">Dolomite</text>
+      <text x="230" y="161" fill="#38bdf8" font-size="11">CaCO₃·MgCO₃</text>
+      <text x="340" y="161" fill="#4ade80" font-size="12" font-weight="bold">109%</text>
+
+      <!-- Calcite -->
+      <rect x="15" y="176" width="375" height="32" fill="#0f172a" stroke="#334155" rx="4"/>
+      <text x="30" y="197" fill="#f8fafc" font-size="11">Calcite / Agricultural Lime</text>
+      <text x="230" y="197" fill="#38bdf8" font-size="11">CaCO₃</text>
+      <text x="340" y="197" fill="#facc15" font-size="12" font-weight="bold">100% (Std)</text>
+
+      <!-- Basic Slag -->
+      <rect x="15" y="212" width="375" height="32" fill="#0f172a" stroke="#334155" rx="4"/>
+      <text x="30" y="233" fill="#f8fafc" font-size="11">Basic Slag</text>
+      <text x="230" y="233" fill="#38bdf8" font-size="11">(CaO)₅·P₂O₅·SiO₂</text>
+      <text x="340" y="233" fill="#94a3b8" font-size="12">60 - 80%</text>
+
+      <!-- Footnote -->
+      <text x="202" y="280" fill="#38bdf8" font-size="11" font-weight="bold" text-anchor="middle">
+        🔑 Quicklime (CaO) has the highest neutralizing capacity (179%)
+      </text>
+    </g>
+  </g>
+</svg>
