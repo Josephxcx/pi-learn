@@ -1,0 +1,32 @@
+{
+  "name": "pi-learn",
+  "version": "1.0.0",
+  "description": "Interactive 1-to-1 active learning system for Pi: Diagnostic MCQ probing, Mermaid DAG roadmaps, LaTeX math, SVG visualizer, and Obsidian live sync based on Eero Alvar's methodology.",
+  "main": "extensions/md-log.ts",
+  "keywords": [
+    "pi-package",
+    "learning",
+    "pedagogy",
+    "obsidian",
+    "education",
+    "quiz",
+    "latex",
+    "mermaid",
+    "svg"
+  ],
+  "author": "Joseph",
+  "license": "MIT",
+  "pi": {
+    "extensions": [
+      "./extensions/ask-mcq.ts",
+      "./extensions/md-log.ts"
+    ],
+    "skills": [
+      "./skills/teach"
+    ]
+  },
+  "peerDependencies": {
+    "@earendil-works/pi-coding-agent": "*",
+    "typebox": "*"
+  }
+}
