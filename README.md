@@ -201,7 +201,7 @@ flowchart TD
 
 | Extension / Tool | Role & Technical Description |
 | :--- | :--- |
-| **`ask_mcq`** | Interactive terminal TUI selector tool with keyboard navigation, custom answers, and *"🤷 I don't know / Explain this"* fallback options. |
+| **`ask_user_question`** | Rich terminal TUI dialog with keyboard navigation, option trade-off descriptions, live markdown previews, and multiline custom answers (powered by `@juicesharp/rpiv-ask-user-question`). |
 | **`md-log`** | Real-time Obsidian live-sync. Auto-discovers active Obsidian vaults, structures notes into clean subject subfolders, and maintains a Master Dashboard. |
 | **`save_diagram_svg`** | Generates standalone vector SVGs and auto-renders raster PNG previews for AI visual verification before note embedding. |
 | **`teach` Skill** | Full pedagogical skill orchestrating the Probe $\to$ Plan $\to$ Teach learning arc. |

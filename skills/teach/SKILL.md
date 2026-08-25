@@ -18,7 +18,7 @@ This skill implements the high-retention 1-to-1 learning architecture. It elimin
 ## Core Philosophy
 1. **Operate at the Frontier:** Never waste time on concepts the user already has down cold, nor dump material they lack prerequisites to understand.
 2. **Atomic Steps (No Rushing):** Advance strictly **one reasoning step at a time**. Do not dump multiple conceptual leaps in one turn.
-3. **Active Recall over Passive Nodding:** Test understanding after every single step using `ask_mcq`.
+3. **Active Recall over Passive Nodding:** Test understanding after every single step using `ask_user_question`.
 4. **Visuals with Ground Truth:** Generate SVG diagrams for geometric/structural concepts, inspect them via visual tools, and embed verified assets into the notes.
 5. **Obsidian-Ready Artifacts:** Keep notes synchronized with LaTeX equations, Mermaid DAGs, and diagram embeds.
 
@@ -28,8 +28,9 @@ This skill implements the high-retention 1-to-1 learning architecture. It elimin
 
 ### Phase 1: Probe (Knowledge Calibration)
 1. **Identify Prerequisite Strands:** List the foundational concepts required to master the target topic.
-2. **Diagnostic Questions via `ask_mcq`:**
-   - Call the `ask_mcq` tool with 3 to 6 targeted diagnostic questions.
+2. **Diagnostic Questions via `ask_user_question`:**
+   - Call the `ask_user_question` tool with 1 to 4 targeted diagnostic questions in a single clean questionnaire (or sequential tabbed questions).
+   - Each option should provide a concise label and description (and optional code/formula markdown preview).
    - Start broad, then binary search the edge across each prerequisite strand.
    - Assess user's mental model and identify exact knowledge gaps.
 
@@ -53,7 +54,7 @@ For each node in the DAG sequentially:
    - The tool generates a PNG preview in `assets/`. Use `read` on the `.png` to visually inspect the diagram for label overlapping, alignment, or clarity.
    - Refine the SVG if necessary.
 3. **Active Recall Check:**
-   - Call `ask_mcq(question, options, context)` with a question specifically testing the concept just taught.
+   - Call `ask_user_question` with a question specifically testing the concept just taught. Provide 2-4 distinct conceptual options with clear descriptions (and optional markdown previews).
    - Wait for learner's response.
 4. **Reinforce & Log:**
    - If correct: Validate why it's right and solidify the intuition.

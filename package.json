@@ -23,7 +23,6 @@
   "license": "MIT",
   "pi": {
     "extensions": [
-      "./extensions/ask-mcq.ts",
       "./extensions/md-log.ts"
     ],
     "skills": [
@@ -32,6 +31,7 @@
   },
   "peerDependencies": {
     "@earendil-works/pi-coding-agent": "*",
+    "@juicesharp/rpiv-ask-user-question": "*",
     "typebox": "*"
   }
 }
