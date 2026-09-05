@@ -4,6 +4,14 @@ import fs from "node:fs";
 import path from "node:path";
 import os from "node:os";
 import { execSync } from "node:child_process";
+import { resolveActiveExamTaxonomy, parseMudalPYQs } from "./prioritization/prioritization-parser.ts";
+import { prioritizeTaxonomy } from "./prioritization/prioritization-engine.ts";
+import {
+  renderSyllabusOverview,
+  renderUnitSubtopicsDetail,
+  renderSubtopicDossier,
+} from "./prioritization/prioritization-presenter.ts";
+import type { PrioritizationSessionState, PrioritizedSubtopic } from "./prioritization/prioritization-types.ts";
 
 const FALLBACK_NOTES_DIR = path.join(os.homedir(), "Documents", "Vault", "Study");
 
@@ -32,8 +40,51 @@ function getObsidianVaultPath(): string {
   }
   return FALLBACK_NOTES_DIR;
 }
+const SESSION_STATE_FILE = path.join(os.homedir(), ".pi", "agent", "learn-session.json");
 
-let activeNotePath: string | null = null;
+function loadSessionState(): PrioritizationSessionState | null {
+  try {
+    if (fs.existsSync(SESSION_STATE_FILE)) {
+      const data = JSON.parse(fs.readFileSync(SESSION_STATE_FILE, "utf-8"));
+      if (data && data.notePath && fs.existsSync(data.notePath)) {
+        return data;
+      }
+    }
+  } catch {
+    // ignore
+  }
+  return null;
+}
+
+function saveSessionState(state: PrioritizationSessionState): void {
+  try {
+    const dir = path.dirname(SESSION_STATE_FILE);
+    ensureDirectory(dir);
+    fs.writeFileSync(SESSION_STATE_FILE, JSON.stringify(state, null, 2), "utf-8");
+  } catch {
+    // ignore
+  }
+}
+
+let activeSessionState: PrioritizationSessionState | null = loadSessionState();
+let activeNotePath: string | null = activeSessionState?.notePath || null;
+let activeAssetsDir: string | null = activeSessionState?.assetsDir || null;
+
+function resolveExamAssetsDir(vaultPath: string, targetFilePath: string): string {
+  const rel = path.relative(vaultPath, targetFilePath);
+  const segments = rel.split(path.sep);
+
+  if (segments.length > 1) {
+    const topFolder = segments[0]; // e.g. "MUDAL-System-Manager" or "SAS-I"
+    const examAssets = path.join(vaultPath, topFolder, "assets");
+    ensureDirectory(examAssets);
+    return examAssets;
+  }
+
+  const defaultAssets = path.join(vaultPath, "assets");
+  ensureDirectory(defaultAssets);
+  return defaultAssets;
+}
 
 function ensureDirectory(dirPath: string) {
   if (!fs.existsSync(dirPath)) {
@@ -52,34 +103,34 @@ function sanitizeFilename(name: string): string {
 function resolveTopicSubfolder(topic: string): string {
   const lower = topic.toLowerCase();
   if (lower.includes("soil") || lower.includes("clay") || lower.includes("erosion") || lower.includes("fertility") || lower.includes("nutrient")) {
-    return "Technical/Soil-Science";
+    return "SAS-I/Soil-Science";
   }
   if (lower.includes("weed") || lower.includes("agronomy") || lower.includes("tillage") || lower.includes("cropping") || lower.includes("meteorology")) {
-    return "Technical/Agronomy";
+    return "SAS-I/Agronomy";
   }
   if (lower.includes("breed") || lower.includes("genetic") || lower.includes("heterosis") || lower.includes("mendel")) {
-    return "Technical/Plant-Breeding-Genetics";
+    return "SAS-I/Plant-Breeding-Genetics";
   }
   if (lower.includes("pathology") || lower.includes("pest") || lower.includes("disease") || lower.includes("fungal") || lower.includes("bacterial") || lower.includes("insect") || lower.includes("entomology")) {
-    return "Technical/Plant-Protection";
+    return "SAS-I/Plant-Protection";
   }
   if (lower.includes("horticulture") || lower.includes("fruit") || lower.includes("vegetable") || lower.includes("post-harvest") || lower.includes("pomology")) {
-    return "Technical/Horticulture";
+    return "SAS-I/Horticulture";
   }
   if (lower.includes("seed")) {
-    return "Technical/Seeds";
+    return "SAS-I/Seeds";
   }
   if (lower.includes("physio") || lower.includes("photosynthesis") || lower.includes("transpiration") || lower.includes("water relation")) {
-    return "Technical/Crop-Physiology";
+    return "SAS-I/Crop-Physiology";
   }
   if (lower.includes("machinery") || lower.includes("power") || lower.includes("tillage implement") || lower.includes("tractor")) {
-    return "Technical/Farm-Power-Machinery";
+    return "SAS-I/Farm-Power-Machinery";
   }
   if (lower.includes("extension") || lower.includes("communication") || lower.includes("adoption")) {
-    return "Technical/Agricultural-Extension";
+    return "SAS-I/Agricultural-Extension";
   }
   if (lower.includes("economic") || lower.includes("farm management") || lower.includes("marketing")) {
-    return "Technical/Agricultural-Economics";
+    return "SAS-I/Agricultural-Economics";
   }
   if (lower.includes("mizo") || lower.includes("polity") || lower.includes("history") || lower.includes("geography") || lower.includes("ecology") || lower.includes("environment")) {
     return "General-Studies";
@@ -87,7 +138,7 @@ function resolveTopicSubfolder(topic: string): string {
   if (lower.includes("english") || lower.includes("grammar") || lower.includes("vocabulary")) {
     return "General-English";
   }
-  return "Technical";
+  return "SAS-I";
 }
 
 function ensureObsidianAssetConfig(vaultDir: string) {
@@ -130,7 +181,7 @@ export default function mdLogExtension(pi: ExtensionAPI) {
           "---",
           `title: "${topicStr}"`,
           `date: ${new Date().toISOString().slice(0, 10)}`,
-          `subject: "SAS-I ${subFolder.replace("Technical/", "").replace(/-/g, " ")}"`,
+          `subject: "SAS-I ${subFolder.replace("SAS-I/", "").replace(/-/g, " ")}"`,
           `tags: [learning, sas-1, ${sanitizeFilename(topicStr)}]`,
           "status: in-progress",
           "---",
@@ -175,7 +226,7 @@ export default function mdLogExtension(pi: ExtensionAPI) {
     name: "init_learning_session",
     label: "Init Learning Note",
     description:
-      "Initialize an Obsidian Markdown note in its proper hierarchical subject folder (e.g. Technical/Soil-Science/).",
+      "Initialize an Obsidian Markdown note in its proper hierarchical subject folder (e.g. MUDAL-System-Manager/Technical-Paper-II/).",
     parameters: Type.Object({
       topic: Type.String({ description: "The subject or topic being learned." }),
       goal: Type.String({ description: "The learning objective / target understanding." }),
@@ -186,34 +237,68 @@ export default function mdLogExtension(pi: ExtensionAPI) {
       ensureDirectory(vaultPath);
       ensureObsidianAssetConfig(vaultPath);
 
-      const assetsDir = path.join(vaultPath, "assets");
-      ensureDirectory(assetsDir);
-
       let filePath: string;
       let subFolder: string;
+      let examId = "General";
 
       if (params.customPath) {
         filePath = path.isAbsolute(params.customPath)
           ? params.customPath
           : path.join(vaultPath, params.customPath);
         subFolder = path.relative(vaultPath, path.dirname(filePath));
+        examId = subFolder.split(path.sep)[0] || "General";
       } else {
-        subFolder = resolveTopicSubfolder(params.topic);
-        const targetDir = path.join(vaultPath, subFolder);
-        ensureDirectory(targetDir);
-        filePath = path.join(targetDir, `${sanitizeFilename(params.topic)}.md`);
+        // Dynamic Exam detection based on vault folders
+        const mudalDir = path.join(vaultPath, "MUDAL-System-Manager");
+        const isMudal = fs.existsSync(mudalDir) && (
+          params.topic.toLowerCase().includes("mudal") ||
+          params.topic.toLowerCase().includes("database") ||
+          params.topic.toLowerCase().includes("network") ||
+          params.topic.toLowerCase().includes("operating system")
+        );
+
+        if (isMudal) {
+          examId = "MUDAL-System-Manager";
+          subFolder = "MUDAL-System-Manager/Technical-Paper-II";
+          const targetDir = path.join(vaultPath, subFolder);
+          ensureDirectory(targetDir);
+          filePath = path.join(targetDir, `${sanitizeFilename(params.topic)}.md`);
+        } else {
+          subFolder = resolveTopicSubfolder(params.topic);
+          examId = subFolder.split(path.sep)[0] || "SAS-I";
+          const targetDir = path.join(vaultPath, subFolder);
+          ensureDirectory(targetDir);
+          filePath = path.join(targetDir, `${sanitizeFilename(params.topic)}.md`);
+        }
       }
 
+      ensureDirectory(path.dirname(filePath));
+      const assetsDir = resolveExamAssetsDir(vaultPath, filePath);
+
       activeNotePath = filePath;
+      activeAssetsDir = assetsDir;
+
+      activeSessionState = {
+        activeSessionId: `sess-${Date.now()}`,
+        examId,
+        topic: params.topic,
+        notePath: filePath,
+        assetsDir,
+        startedAt: new Date().toISOString(),
+        lastAccessedAt: new Date().toISOString(),
+      };
+      saveSessionState(activeSessionState);
 
       const dateStr = new Date().toISOString().slice(0, 10);
+      const cleanExamTitle = examId.replace(/-/g, " ");
       const content = [
         "---",
         `title: "${params.topic}"`,
         `date: ${dateStr}`,
-        `subject: "SAS-I ${subFolder.replace("Technical/", "").replace(/-/g, " ")}"`,
+        `exam: "${cleanExamTitle}"`,
+        `subject: "${cleanExamTitle} - ${params.topic}"`,
         `goal: "${params.goal.replace(/"/g, "'")}"`,
-        `tags: [learning, ai-tutor, sas-1, ${sanitizeFilename(params.topic)}]`,
+        `tags: [learning, ai-tutor, ${sanitizeFilename(examId)}, ${sanitizeFilename(params.topic)}]`,
         "status: in-progress",
         "---",
         "",
@@ -239,6 +324,7 @@ export default function mdLogExtension(pi: ExtensionAPI) {
             type: "text",
             text: JSON.stringify({
               status: "success",
+              examId,
               notePath: filePath,
               relativeVaultPath: path.relative(vaultPath, filePath),
               vaultPath: vaultPath,
@@ -262,8 +348,16 @@ export default function mdLogExtension(pi: ExtensionAPI) {
     }),
     async execute(_id, params, _signal, _onUpdate, ctx) {
       if (!activeNotePath) {
+        const reloaded = loadSessionState();
+        if (reloaded && reloaded.notePath && fs.existsSync(reloaded.notePath)) {
+          activeNotePath = reloaded.notePath;
+          activeAssetsDir = reloaded.assetsDir;
+        }
+      }
+
+      if (!activeNotePath) {
         const vaultPath = getObsidianVaultPath();
-        activeNotePath = path.join(vaultPath, "Technical", "active-learning-session.md");
+        activeNotePath = path.join(vaultPath, "General", "active-learning-session.md");
         ensureDirectory(path.dirname(activeNotePath));
       }
 
@@ -326,8 +420,16 @@ export default function mdLogExtension(pi: ExtensionAPI) {
     }),
     async execute(_id, params, _signal, _onUpdate, ctx) {
       if (!activeNotePath) {
+        const reloaded = loadSessionState();
+        if (reloaded && reloaded.notePath && fs.existsSync(reloaded.notePath)) {
+          activeNotePath = reloaded.notePath;
+          activeAssetsDir = reloaded.assetsDir;
+        }
+      }
+
+      if (!activeNotePath) {
         const vaultPath = getObsidianVaultPath();
-        activeNotePath = path.join(vaultPath, "Technical", "active-learning-session.md");
+        activeNotePath = path.join(vaultPath, "General", "active-learning-session.md");
         ensureDirectory(path.dirname(activeNotePath));
       }
 
@@ -376,19 +478,31 @@ export default function mdLogExtension(pi: ExtensionAPI) {
   pi.registerTool({
     name: "save_diagram_svg",
     label: "Save SVG Diagram",
-    description: "Save an SVG diagram to assets/ and generate a PNG preview for visual verification.",
+    description: "Save an SVG diagram to the active exam assets/ directory and generate a temporary PNG preview in /tmp.",
     parameters: Type.Object({
       filename: Type.String({ description: "Filename ending in .svg." }),
       svgContent: Type.String({ description: "Complete valid SVG source markup." }),
     }),
     async execute(_id, params, _signal, _onUpdate, ctx) {
       const vaultPath = getObsidianVaultPath();
-      const assetsDir = path.join(vaultPath, "assets");
+
+      // Dynamically route to exam assets directory
+      let assetsDir = activeAssetsDir;
+      if (!assetsDir && activeNotePath) {
+        assetsDir = resolveExamAssetsDir(vaultPath, activeNotePath);
+      }
+      if (!assetsDir) {
+        assetsDir = path.join(vaultPath, "assets");
+      }
       ensureDirectory(assetsDir);
+
+      const previewDir = path.join(os.tmpdir(), "pi-diagram-previews");
+      ensureDirectory(previewDir);
 
       const cleanFilename = path.basename(params.filename);
       const svgPath = path.join(assetsDir, cleanFilename);
-      const pngPath = svgPath.replace(/\.svg$/i, ".png");
+      const pngFilename = cleanFilename.replace(/\.svg$/i, ".png");
+      const pngPath = path.join(previewDir, pngFilename);
 
       fs.writeFileSync(svgPath, params.svgContent, "utf-8");
 
@@ -417,6 +531,155 @@ export default function mdLogExtension(pi: ExtensionAPI) {
           },
         ],
       };
+    },
+  });
+
+  // Tool 5: prioritize_syllabus
+  pi.registerTool({
+    name: "prioritize_syllabus",
+    label: "Prioritize Syllabus",
+    description:
+      "Analyze exam syllabus and calculate Tri-Vector Scores (Exam Priority, Foundation, Study Efficiency), Primary Action Anchors, and Evidence Badges.",
+    parameters: Type.Object({
+      examId: Type.Optional(Type.String({ description: "Target exam ID (e.g. 'MUDAL-System-Manager' or 'SAS-I'). Auto-detected if omitted." })),
+      unitNumber: Type.Optional(Type.Number({ description: "Filter subtopics to a specific unit number." })),
+      minActionAnchor: Type.Optional(Type.String({ description: "Filter out topics below this anchor (e.g. 'Important' or 'High Priority')." })),
+    }),
+    async execute(_id, params, _signal, _onUpdate, _ctx) {
+      const vaultPath = getObsidianVaultPath();
+      const taxonomy = resolveActiveExamTaxonomy(vaultPath, params.examId);
+      if (!taxonomy) {
+        return {
+          content: [
+            {
+              type: "text",
+              text: JSON.stringify({
+                status: "error",
+                message: `No syllabus found in vault for exam: ${params.examId || "auto-detect"}`,
+              }),
+            },
+          ],
+        };
+      }
+
+      let pyqs: any[] = [];
+      const mudalPyqDir = path.join(os.homedir(), "Work", "mpsc_system_manager_pyqs");
+      if (taxonomy.examId === "MUDAL-System-Manager" && fs.existsSync(mudalPyqDir)) {
+        pyqs = parseMudalPYQs(mudalPyqDir, taxonomy);
+      }
+
+      let prioritized = prioritizeTaxonomy(taxonomy, pyqs);
+
+      if (params.unitNumber !== undefined) {
+        prioritized = prioritized.filter((p) => p.unit.unitNumber === params.unitNumber);
+      }
+
+      const anchorRanks: Record<string, number> = {
+        "Must Study": 5,
+        "High Priority": 4,
+        "Important": 3,
+        "Moderate": 2,
+        "Lower": 1,
+      };
+
+      if (params.minActionAnchor && anchorRanks[params.minActionAnchor]) {
+        const minRank = anchorRanks[params.minActionAnchor];
+        prioritized = prioritized.filter((p) => (anchorRanks[p.score.actionAnchor] || 0) >= minRank);
+      }
+
+      return {
+        content: [
+          {
+            type: "text",
+            text: JSON.stringify(
+              {
+                status: "success",
+                examId: taxonomy.examId,
+                examTitle: taxonomy.examTitle,
+                totalMarks: taxonomy.totalMarks,
+                totalSubtopics: prioritized.length,
+                topics: prioritized.map((p) => ({
+                  id: p.subtopic.id,
+                  title: p.subtopic.title,
+                  unit: p.unit.title,
+                  unitNumber: p.unit.unitNumber,
+                  officialUnitMarks: p.unit.officialMarks,
+                  actionAnchor: p.score.actionAnchor,
+                  evidenceBadges: p.score.evidenceBadges,
+                  confidence: p.score.confidence,
+                  scores: {
+                    examPriority: p.score.examPriorityScore,
+                    foundation: p.score.foundationScore,
+                    studyEfficiency: p.score.studyEfficiencyScore,
+                    composite: p.score.compositeScore,
+                  },
+                  prerequisites: p.subtopic.prerequisites,
+                })),
+              },
+              null,
+              2
+            ),
+          },
+        ],
+      };
+    },
+  });
+
+  // Tool 6: drill_down_syllabus
+  pi.registerTool({
+    name: "drill_down_syllabus",
+    label: "Drill Down Syllabus",
+    description:
+      "Interactive progressive drill-down navigation: Overview -> Unit Detail -> Subtopic Dossier with Two-Layer evidence badges.",
+    parameters: Type.Object({
+      examId: Type.Optional(Type.String({ description: "Target exam ID (e.g. 'MUDAL-System-Manager', 'SAS-I')." })),
+      stage: Type.Union(
+        [
+          Type.Literal("overview"),
+          Type.Literal("unit_detail"),
+          Type.Literal("subtopic_dossier"),
+        ],
+        { description: "Navigation depth: overview, unit_detail, or subtopic_dossier." }
+      ),
+      unitNumber: Type.Optional(Type.Number({ description: "Required for 'unit_detail'." })),
+      subtopicId: Type.Optional(Type.String({ description: "Required for 'subtopic_dossier'." })),
+    }),
+    async execute(_id, params, _signal, _onUpdate, _ctx) {
+      const vaultPath = getObsidianVaultPath();
+      const taxonomy = resolveActiveExamTaxonomy(vaultPath, params.examId);
+      if (!taxonomy) {
+        return {
+          content: [{ type: "text", text: `No syllabus found in vault for exam: ${params.examId || "auto-detect"}` }],
+        };
+      }
+
+      let pyqs: any[] = [];
+      const mudalPyqDir = path.join(os.homedir(), "Work", "mpsc_system_manager_pyqs");
+      if (taxonomy.examId === "MUDAL-System-Manager" && fs.existsSync(mudalPyqDir)) {
+        pyqs = parseMudalPYQs(mudalPyqDir, taxonomy);
+      }
+
+      const prioritized = prioritizeTaxonomy(taxonomy, pyqs);
+
+      if (params.stage === "overview") {
+        const text = renderSyllabusOverview(taxonomy, prioritized);
+        return { content: [{ type: "text", text }] };
+      }
+
+      if (params.stage === "unit_detail") {
+        const unit = taxonomy.units.find((u) => u.unitNumber === params.unitNumber) || taxonomy.units[0];
+        const unitSubs = prioritized.filter((p) => p.unit.id === unit.id);
+        const text = renderUnitSubtopicsDetail(unit, unitSubs);
+        return { content: [{ type: "text", text }] };
+      }
+
+      if (params.stage === "subtopic_dossier") {
+        const item = prioritized.find((p) => p.subtopic.id === params.subtopicId) || prioritized[0];
+        const text = renderSubtopicDossier(item);
+        return { content: [{ type: "text", text }] };
+      }
+
+      return { content: [{ type: "text", text: "Invalid stage requested." }] };
     },
   });
 }
