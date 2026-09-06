@@ -100,7 +100,8 @@ Traditional learning operates on a **many-to-many** relationship (one course tea
 
 ```mermaid
 flowchart LR
-    A["Phase 1: Probe"] --> B["Phase 2: Plan"] --> C["Phase 3: Teach"]
+    A0["Phase 0: Prioritize"] --> A["Phase 1: Probe"] --> B["Phase 2: Plan"] --> C["Phase 3: Teach"]
+    A0 -.->|Syllabus & PYQ Tri-Vector analysis| A0
     A -.->|Binary search frontier via TUI MCQs| A
     B -.->|Generate DAG & fact-check via subagents| B
     C -.->|Atomic steps + active recall + SVG visuals| C
@@ -108,7 +109,16 @@ flowchart LR
 
 ---
 
-## 🚀 The 3-Phase Architecture
+## 🏗️ The 4-Phase Architecture
+
+### Phase 0: Prioritize (Syllabus & PYQ Drill-Down)
+*Pi analyzes official syllabus notifications, mark distributions, and Past Year Questions (PYQs) to calculate high-yield focus areas before teaching begins.*
+
+* **Tri-Vector Scoring:** Calculates Exam Priority, Foundation Strength, and Study Efficiency to prioritize subtopics objectively.
+* **Two-Layer Evidence Badges:** Displays Primary Action Anchors (🔴 `Must Study`, 🟠 `High Priority`, 🟡 `Important`) and orthogonal badges (🧠 `Core Foundation`, ⚓ `Frequent Anchor`, 📈 `Rising Trend`).
+* **Learner Agency:** Empowers you to drill down interactively from full syllabus overview to unit details and subtopic dossiers.
+
+---
 
 ### Phase 1: Probe (Knowledge Calibration)
 *Pi asks you a few quick multiple-choice questions to see what you already know and find the exact starting point for your lesson.*
@@ -201,10 +211,11 @@ flowchart TD
 
 | Extension / Tool | Role & Technical Description |
 | :--- | :--- |
+| **`prioritize_syllabus`** & **`drill_down_syllabus`** | Intelligent syllabus/PYQ engine: computes Tri-Vector prioritization scores and provides interactive drill-down navigation. |
 | **`ask_user_question`** | Rich terminal TUI dialog with keyboard navigation, option trade-off descriptions, live markdown previews, and multiline custom answers (powered by `@juicesharp/rpiv-ask-user-question`). |
 | **`md-log`** | Real-time Obsidian live-sync. Auto-discovers active Obsidian vaults, structures notes into clean subject subfolders, and maintains a Master Dashboard. |
 | **`save_diagram_svg`** | Generates standalone vector SVGs and auto-renders raster PNG previews for AI visual verification before note embedding. |
-| **`teach` Skill** | Full pedagogical skill orchestrating the Probe $\to$ Plan $\to$ Teach learning arc. |
+| **`teach` Skill** | Full pedagogical skill orchestrating the Prioritize $\to$ Probe $\to$ Plan $\to$ Teach learning arc. |
 
 ---
 
