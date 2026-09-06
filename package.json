@@ -1,7 +1,7 @@
 {
   "name": "pi-learn",
   "version": "1.0.0",
-  "description": "Interactive 1-to-1 active learning system for Pi: Diagnostic MCQ probing, Mermaid DAG roadmaps, LaTeX math, SVG visualizer, and Obsidian live sync based on Eero Alvar's methodology.",
+  "description": "Interactive 1-to-1 learning tutor for Pi: 4-phase syllabus prioritization, diagnostic quizzes, Mermaid roadmaps, LaTeX math, and live Obsidian notes.",
   "main": "extensions/md-log.ts",
   "keywords": [
     "pi-package",
@@ -21,6 +21,9 @@
   },
   "homepage": "https://github.com/Josephxcx/pi-learn#readme",
   "license": "MIT",
+  "scripts": {
+    "postinstall": "node scripts/check-deps.js"
+  },
   "pi": {
     "extensions": [
       "./extensions/md-log.ts"
