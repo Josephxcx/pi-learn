@@ -29,7 +29,7 @@
       "./extensions/md-log.ts"
     ],
     "skills": [
-      "./skills/teach"
+      "./skills/pi-learn"
     ]
   },
   "peerDependencies": {

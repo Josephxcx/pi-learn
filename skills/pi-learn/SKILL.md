@@ -1,5 +1,5 @@
 ---
-name: teach
+name: pi-learn
 description: Learn any complex subject (Math, Physics, CS, Systems, etc.) using the 4-phase pedagogical framework (Prioritize, Probe, Plan, Teach) with intelligent syllabus/PYQ prioritization, interactive MCQs, Mermaid DAG roadmaps, LaTeX math, verified SVG diagrams, and Obsidian live syncing.
 ---
 
@@ -10,7 +10,7 @@ This skill implements the high-retention 1-to-1 learning architecture. It elimin
 ---
 
 ## When to Use
-- The user says: `"teach me X"`, `"I want to learn X"`, `"help me understand X"`, or invokes `/teach`.
+- The user says: `"teach me X"`, `"I want to learn X"`, `"help me understand X"`, or invokes `/pi-learn` (or `/teach`).
 - Learning technical, mathematical, scientific, or conceptual topics requiring systematic foundation-building (e.g. Database Management Systems, Computer Networks, Operating Systems, Soil Science, Agronomy).
 
 ---

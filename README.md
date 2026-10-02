@@ -215,7 +215,7 @@ flowchart TD
 | **`ask_user_question`** | Rich terminal TUI dialog with keyboard navigation, option trade-off descriptions, live markdown previews, and multiline custom answers (powered by `@juicesharp/rpiv-ask-user-question`). |
 | **`md-log`** | Real-time Obsidian live-sync. Auto-discovers active Obsidian vaults, structures notes into clean subject subfolders, and maintains a Master Dashboard. |
 | **`save_diagram_svg`** | Generates standalone vector SVGs and auto-renders raster PNG previews for AI visual verification before note embedding. |
-| **`teach` Skill** | Full pedagogical skill orchestrating the Prioritize $\to$ Probe $\to$ Plan $\to$ Teach learning arc. |
+| **`pi-learn` Skill** | Full pedagogical skill orchestrating the Prioritize $\to$ Probe $\to$ Plan $\to$ Teach learning arc. |
 
 ---
 
