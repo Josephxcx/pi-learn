@@ -57,7 +57,7 @@ Use `/md-view` to open your current note. Add your own thoughts in its **Your no
 
 ## Interactive visual companions
 
-Ask Pi to explain a concept with an interactive visual or practice quiz. It can create a standalone HTML page linked from your lesson, with diagrams, reveal controls, and MCQs. Designs adapt to the topic using the bundled frontend-design skill.
+Ask Pi to explain a concept with an interactive visual or practice quiz. It can create a standalone HTML page linked from your lesson, with diagrams, reveal controls, and MCQs. Visual explanations favour polished, topic-specific illustrations using the bundled frontend-design skill. Mermaid remains available for simple roadmaps and flows.
 
 Open companions in a browser, or use Obsidian's HTML Viewer plugin with scripts enabled for your trusted lessons. Practice inside a page does not update your saved Pi review status. See [visual setup and verification](docs/technical-guide.md#html-visual-companions).
 

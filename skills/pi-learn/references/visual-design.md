@@ -18,3 +18,17 @@ Read the frontend-design skill and this adaptation once per session, before the 
 - Test useful interactions and inspect available browser/SVG previews. Critique the rendered design for clarity, hierarchy, clipping, and misleading emphasis. Check facts separately from presentation.
 
 For HTML authoring, continue with [component guidance](html-visuals.md). Preserve Markdown notes and existing SVG workflows.
+
+
+## Choose the format for the explanation
+
+- Prefer HTML with carefully authored inline SVG for an illustrated concept explanation. It can be a beautiful static composition; add controls only when changing or revealing something teaches the concept.
+- Keep Mermaid for compact roadmaps, dependencies, and simple flows. Use an illustrated composition when the learner needs to recognize a structure or understand a physical mechanism.
+- Keep standalone SVG for static figures embedded directly in Markdown, following the static SVG tool's supported features. HTML allows richer styling and interaction; do not send its scripts or CSS to the static SVG tool.
+- Keep native Markdown tables and prose when they communicate the concept clearly without artwork.
+
+## Review the rendered result before delivery
+
+Browser smoke tests are only the functional check. Inspect the available desktop and narrow screenshots, then revise until the explanation has a clear focal point, deliberate typography and spacing, readable labels, and a composition specific to its subject. Check natural contours and connected anatomy for organisms; exact geometry and meaningful arrows for abstract or technical diagrams. Do not accept a recognizable subject made from loosely assembled primitives merely because the page renders. Avoid repeating the same card grid across unrelated topics.
+
+Check factual correctness separately. If visual inspection is unavailable, say so; do not describe an uninspected page as visually verified. Keep the critique within the authoring workflow so the learner receives the finished explanation without another design questionnaire.
