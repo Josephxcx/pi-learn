@@ -433,7 +433,7 @@ test('cancelling a resume before pointer publication keeps the previous active n
 
 test('Windows lock acquisition retries a transient deletion-sharing error', async t => {
   const {root}=await fixture(t);
-  const target=path.join(root,'shared');
+  const target=path.join(await fs.realpath(root),'shared');
   const originalOpen=fs.open;
   const platform=Object.getOwnPropertyDescriptor(process,'platform')!;
   let failures=0, writes=0;
@@ -452,7 +452,7 @@ test('Windows lock acquisition retries a transient deletion-sharing error', asyn
 
 test('persistent Windows lock permission errors keep their original cause', async t => {
   const {root}=await fixture(t);
-  const target=path.join(root,'denied');
+  const target=path.join(await fs.realpath(root),'denied');
   const platform=Object.getOwnPropertyDescriptor(process,'platform')!;
   const originalOpen=fs.open, originalNow=Date.now;
   const denied=Object.assign(new Error('Permission denied'),{code:'EPERM'});
