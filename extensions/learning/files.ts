@@ -154,7 +154,8 @@ export async function withFileLock<T>(target: string, work: () => Promise<T>, si
   await assertSafePath(lockPath);
   await fs.mkdir(path.dirname(lockPath), { recursive: true });
   const token = JSON.stringify({ pid: process.pid, token: randomUUID(), createdAt: new Date().toISOString() });
-  const deadline = Date.now() + 5000;
+  // Durable note transactions can queue behind several writers on slower disks.
+  const deadline = Date.now() + 30_000;
   for (;;) {
     signal?.throwIfAborted();
     await assertSafePath(lockPath);

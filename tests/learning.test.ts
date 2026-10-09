@@ -460,7 +460,7 @@ test('persistent Windows lock permission errors keep their original cause', asyn
   Object.defineProperty(process,'platform',{...platform,value:'win32'});
   Date.now=()=>now;
   fs.open=async (...args:Parameters<typeof fs.open>)=>{
-    if(args[0]===`${target}.lock`){now=6000;throw denied;}
+    if(args[0]===`${target}.lock`){now=31_000;throw denied;}
     return originalOpen(...args);
   };
   try {
