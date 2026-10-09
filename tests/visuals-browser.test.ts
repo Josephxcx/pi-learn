@@ -130,3 +130,23 @@ test('text accents and captions remain readable on dark insight panels',async()=
     assert.equal(await page.evaluate(()=>getComputedStyle(document.body).backgroundColor),'rgb(250, 247, 239)');
   }finally{await browser.close();fs.rmSync(dir,{recursive:true,force:true});}
 });
+
+test('botanical companion highlights the selected tissue and explains its relevance',async()=>{
+  const browser=await chromium.launch({executablePath,headless:true});
+  try {
+    const page=await browser.newPage({viewport:{width:400,height:900}});
+    await page.setContent(fs.readFileSync(new URL('../examples/visuals/plant-deficiencies.html',import.meta.url),'utf8'));
+    const older=page.getByRole('button',{name:'Older leaves',exact:true});
+    assert.equal(await older.count(),1,'The plant companion needs tissue selection controls');
+    await older.click();
+    assert.equal(await older.getAttribute('aria-pressed'),'true');
+    assert.match(await page.locator('[data-plant-explanation]').innerText(),/mobile nutrients/i);
+    assert.equal(await page.locator('[data-tissue="older"]').getAttribute('data-active'),'true');
+    const tip=page.getByRole('button',{name:'Growing tip',exact:true});
+    await tip.click();
+    assert.equal(await tip.getAttribute('aria-pressed'),'true');
+    assert.equal(await older.getAttribute('aria-pressed'),'false');
+    assert.match(await page.locator('[data-plant-explanation]').innerText(),/calcium/i);
+    assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),true);
+  }finally{await browser.close();}
+});

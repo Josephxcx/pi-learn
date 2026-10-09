@@ -15,6 +15,11 @@ Warm ivory background, ink headings, cobalt for the active concept, orange for n
 
 Classes: `pi-header`, `pi-brand`, `pi-eyebrow`, `pi-accent`, `pi-grid` (responsive columns), `pi-hero`, `pi-diagram` (responsive SVG), `pi-insight`, `pi-number`, `pi-steps`, `pi-step`, `pi-controls`, `pi-secondary`, `pi-caption`, `pi-equation`, `pi-table-scroll`. Wrap wide tables in `pi-table-scroll` so the whole page does not overflow. Use descriptive SVG `<title>`/`<desc>` and readable labels. Diagram topology, geometry, and layout stay topic-specific.
 
+## Diagram quality
+Ground the representation in the subject. For plants and other organisms, use recognisable anatomy, natural contours, visible structural details, and believable connections between parts. Reserve simple geometric primitives for concepts where those shapes communicate accurately. Keep labels outside the illustration and attach leader lines to the tissue they name. Use colour changes and highlights to support the explanation; do not present illustrative colours as diagnostic evidence.
+
+The botanical companion in `examples/source/plant-deficiencies.html` and `examples/source/plant-nutrient-mobility.svg` demonstrates a topic-specific composition and an editable illustration. Treat it as a quality reference, not a fixed layout for every biology lesson. For a custom interaction, verify that controls change the diagram and its explanation together, with keyboard access and a readable narrow layout.
+
 ## Skeleton
 ```html
 <!doctype html>
