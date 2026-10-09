@@ -4,10 +4,9 @@ import fs from 'node:fs/promises';
 import os from 'node:os';
 import path from 'node:path';
 import { learningContext, registerTool } from './shared.ts';
-import { assembleCompanion, companionLink, validateVisualFilename } from '../visuals/companions.ts';
+import { saveCompanion, companionLink } from '../visuals/companions.ts';
 import { verifyCompanion } from '../visuals/verify.ts';
 import type { VisualVerification } from '../visuals/verify.ts';
-import { atomicWriteFile, fileHash, readOptional, withFileLock } from '../learning/files.ts';
 
 export function registerVisualTools(pi: ExtensionAPI): void {
   registerTool(pi, {
@@ -36,14 +35,7 @@ export function registerVisualTools(pi: ExtensionAPI): void {
     const {store,sessionId}=learningContext(ctx,signal);
     const active=await store.status(sessionId);
     if(!active)throw new Error('No active learning note. Call init_learning_session before saving a visual.');
-    validateVisualFilename(params.filename);
-    const html=assembleCompanion(params.htmlContent,params.title,params.includeMath);
-    const htmlPath=path.join(active.assetsDir,params.filename);
-    await withFileLock(htmlPath,async()=>{
-      const previous=await readOptional(htmlPath);
-      (signal ?? ctx.signal)?.throwIfAborted();
-      await atomicWriteFile(htmlPath,html,previous===null?null:fileHash(previous));
-    },signal ?? ctx.signal);
+    const {htmlPath}=await saveCompanion({...params,assetsDir:active.assetsDir,signal:signal ?? ctx.signal});
     let verification:VisualVerification={status:'skipped',screenshots:[],errors:[],checks:[]};
     if(params.verify!==false) {
       const previewDir=await fs.mkdtemp(path.join(os.tmpdir(),'pi-learn-visual-'));

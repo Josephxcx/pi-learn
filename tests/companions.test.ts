@@ -14,7 +14,7 @@ test('saves a standalone document with shared styles and event listeners', async
   const {saveCompanion} = await import(modulePath);
   const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'pi-visual-test-'));
   try {
-    const result = saveCompanion({assetsDir:dir,filename:'fractions.html',title:'Parts & wholes',htmlContent:doc});
+    const result = await saveCompanion({assetsDir:dir,filename:'fractions.html',title:'Parts & wholes',htmlContent:doc});
     const html = fs.readFileSync(result.htmlPath,'utf8');
     assert.match(html,/Parts &amp; wholes/);
     assert.match(html,/viewport/);
@@ -27,13 +27,13 @@ test('rejects traversal, wrong extension, empty content, and symlink overwrite',
   const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'pi-visual-test-'));
   try {
     for (const filename of ['../bad.html','bad.svg','nested/a.html','a\\b.html']) {
-      assert.throws(()=>saveCompanion({assetsDir:dir,filename,title:'Test',htmlContent:doc}));
+      await assert.rejects(()=>saveCompanion({assetsDir:dir,filename,title:'Test',htmlContent:doc}));
     }
-    assert.throws(()=>saveCompanion({assetsDir:dir,filename:'a.html',title:'Test',htmlContent:'<div>fragment</div>'}));
+    await assert.rejects(()=>saveCompanion({assetsDir:dir,filename:'a.html',title:'Test',htmlContent:'<div>fragment</div>'}));
     const target = path.join(dir,'target.txt');fs.writeFileSync(target,'keep');
     if (process.platform !== 'win32') {
     fs.symlinkSync(target,path.join(dir,'link.html'));
-    assert.throws(()=>saveCompanion({assetsDir:dir,filename:'link.html',title:'Test',htmlContent:doc}));
+    await assert.rejects(()=>saveCompanion({assetsDir:dir,filename:'link.html',title:'Test',htmlContent:doc}));
     assert.equal(fs.readFileSync(target,'utf8'),'keep');
     }
   } finally {fs.rmSync(dir,{recursive:true,force:true});}

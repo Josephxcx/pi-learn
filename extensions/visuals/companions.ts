@@ -2,6 +2,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import {fileURLToPath} from 'node:url';
 import {createRequire} from 'node:module';
+import {atomicWriteFile, fileHash, readOptional, withFileLock} from '../learning/files.ts';
 
 const require = createRequire(import.meta.url);
 const componentDir = fileURLToPath(new URL('../../assets/visual-companion/', import.meta.url));
@@ -44,15 +45,17 @@ export function assembleCompanion(html: string, title: string, includeMath = fal
   // Insert defaults first so topic-specific styles may intentionally override them.
   return html.replace(/<head(?:\s[^>]*)?>/i, match => match + head).replace(/<\/body\s*>/i, body + '</body>');
 }
-export function saveCompanion(options: {assetsDir:string; filename:string; htmlContent:string; title:string; includeMath?:boolean}): {htmlPath:string} {
+export async function saveCompanion(options: {assetsDir:string; filename:string; htmlContent:string; title:string; includeMath?:boolean; signal?:AbortSignal}): Promise<{htmlPath:string}> {
+  options.signal?.throwIfAborted();
   validateVisualFilename(options.filename);
   const html = assembleCompanion(options.htmlContent, options.title, options.includeMath);
-  fs.mkdirSync(options.assetsDir, {recursive:true});
-  const htmlPath = path.join(fs.realpathSync(options.assetsDir), options.filename);
-  if (fs.existsSync(htmlPath) && fs.lstatSync(htmlPath).isSymbolicLink()) throw new Error('Refusing to overwrite a symbolic link.');
-  // O_NOFOLLOW also rejects dangling symlinks and closes the check/open race.
-  const fd = fs.openSync(htmlPath, fs.constants.O_WRONLY | fs.constants.O_CREAT | fs.constants.O_TRUNC | fs.constants.O_NOFOLLOW, 0o644);
-  try {fs.writeFileSync(fd, html, 'utf8');} finally {fs.closeSync(fd);}
+  const htmlPath = path.join(options.assetsDir, options.filename);
+  await withFileLock(htmlPath, async () => {
+    const previous = await readOptional(htmlPath);
+    options.signal?.throwIfAborted();
+    if (previous === html) return;
+    await atomicWriteFile(htmlPath, html, previous === null ? null : fileHash(previous));
+  }, options.signal);
   return {htmlPath};
 }
 export function companionLink(notePath:string, htmlPath:string, title:string):string {

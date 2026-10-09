@@ -18,7 +18,7 @@ test('HTML practice and step controls behave offline at narrow widths', async()=
   const dir=fs.mkdtempSync(path.join(os.tmpdir(),'pi-browser-test-'));
   const browser=await chromium.launch({executablePath,headless:true});
   try {
-    const {htmlPath}=saveCompanion({assetsDir:dir,filename:'practice.html',title:'Practice',htmlContent:wrap(quiz + `<section data-pi-steps><div data-pi-step>First</div><div data-pi-step>Second</div><button data-pi-prev>Back</button><button data-pi-next>Next</button><p data-pi-step-status role="status"></p></section>`)});
+    const {htmlPath}=await saveCompanion({assetsDir:dir,filename:'practice.html',title:'Practice',htmlContent:wrap(quiz + `<section data-pi-steps><div data-pi-step>First</div><div data-pi-step>Second</div><button data-pi-prev>Back</button><button data-pi-next>Next</button><p data-pi-step-status role="status"></p></section>`)});
     const page=await browser.newPage({viewport:{width:400,height:900}});
     await page.setContent(fs.readFileSync(htmlPath,'utf8'));
     await page.getByRole('checkbox',{name:'2',exact:true}).check();
@@ -44,7 +44,7 @@ test('verifier is available and distinguishes unavailable browser from success',
   assert.ok(mod,'Browser verification is not implemented');
   const dir=fs.mkdtempSync(path.join(os.tmpdir(),'pi-browser-test-'));
   try {
-    const {htmlPath}=saveCompanion({assetsDir:dir,filename:'test.html',title:'Test',htmlContent:wrap('Hello')});
+    const {htmlPath}=await saveCompanion({assetsDir:dir,filename:'test.html',title:'Test',htmlContent:wrap('Hello')});
     const r=await mod.verifyCompanion(htmlPath,dir,{executablePath:'/nonexistent/pi-browser'});
     assert.equal(r.status,'unavailable');assert.ok(r.errors.length);
   }finally{fs.rmSync(dir,{recursive:true,force:true});}
@@ -53,7 +53,7 @@ test('verification catches script failures, external resources, and overflowing 
   const {verifyCompanion}=await import('../extensions/visuals/verify.ts');
   const dir=fs.mkdtempSync(path.join(os.tmpdir(),'pi-browser-test-'));
   try {
-    const {htmlPath}=saveCompanion({assetsDir:dir,filename:'bad.html',title:'Bad',htmlContent:wrap('<img src="https://example.com/a.png"><div style="width:1800px">Wide</div><script>throw new Error("broken control")</script>')});
+    const {htmlPath}=await saveCompanion({assetsDir:dir,filename:'bad.html',title:'Bad',htmlContent:wrap('<img src="https://example.com/a.png"><div style="width:1800px">Wide</div><script>throw new Error("broken control")</script>')});
     const r=await verifyCompanion(htmlPath,dir,{executablePath});
     assert.equal(r.status,'failed');
     assert.ok(r.errors.some((e:string)=>e.includes('broken control')));
@@ -65,7 +65,7 @@ test('verification produces two screenshots for an offline companion with equati
   const {verifyCompanion}=await import('../extensions/visuals/verify.ts');
   const dir=fs.mkdtempSync(path.join(os.tmpdir(),'pi-browser-test-'));
   try {
-    const {htmlPath}=saveCompanion({assetsDir:dir,filename:'math.html',title:'Math',includeMath:true,htmlContent:wrap('<div data-pi-math="display">\\frac{3}{4}</div>')});
+    const {htmlPath}=await saveCompanion({assetsDir:dir,filename:'math.html',title:'Math',includeMath:true,htmlContent:wrap('<div data-pi-math="display">\\frac{3}{4}</div>')});
     const r=await verifyCompanion(htmlPath,dir,{executablePath});
     assert.equal(r.status,'passed',JSON.stringify(r));
     assert.equal(r.screenshots.length,2);assert.ok(r.screenshots.every((f:string)=>fs.existsSync(f)));
@@ -78,7 +78,7 @@ test('single-answer practice requires submission and the fraction slider updates
   const browser=await chromium.launch({executablePath,headless:true});
   try {
     const body=`<form data-pi-quiz><fieldset><legend>Which is even?</legend><label><input type="radio" name="single" data-pi-answer="false">Three</label><label><input type="radio" name="single" data-pi-answer="true" data-pi-explanation="Two is even.">Two</label><button type="submit">Check</button><p hidden data-pi-feedback role="status"></p></fieldset></form><section data-pi-fraction><svg viewBox="0 0 200 100"><rect data-pi-part width="100" height="100"/><rect data-pi-part x="100" width="100" height="100"/></svg><label>Parts<input type="range" value="1"></label><output data-pi-fraction-value></output></section>`;
-    const {htmlPath}=saveCompanion({assetsDir:dir,filename:'single.html',title:'Practice',htmlContent:wrap(body)});
+    const {htmlPath}=await saveCompanion({assetsDir:dir,filename:'single.html',title:'Practice',htmlContent:wrap(body)});
     const page=await browser.newPage({viewport:{width:400,height:900}});
     await page.setContent(fs.readFileSync(htmlPath,'utf8'));
     await page.getByRole('button',{name:'Check',exact:true}).click();
@@ -100,7 +100,7 @@ test('verification rejects relative image, script, and CSS dependencies',async()
   const {verifyCompanion}=await import('../extensions/visuals/verify.ts');
   const dir=fs.mkdtempSync(path.join(os.tmpdir(),'pi-browser-test-'));
   try {
-    const {htmlPath}=saveCompanion({assetsDir:dir,filename:'relative.html',title:'Relative',htmlContent:wrap('<img src="missing-diagram.png"><script src="missing-control.js"></script><div style="height:100px;background-image:url(./missing.png)">Background</div>')});
+    const {htmlPath}=await saveCompanion({assetsDir:dir,filename:'relative.html',title:'Relative',htmlContent:wrap('<img src="missing-diagram.png"><script src="missing-control.js"></script><div style="height:100px;background-image:url(./missing.png)">Background</div>')});
     const r=await verifyCompanion(htmlPath,dir,{executablePath});
     assert.equal(r.status,'failed');
     for(const name of ['missing-diagram.png','missing-control.js','missing.png']) assert.ok(r.errors.some((e:string)=>e.includes(name)),name);
@@ -111,7 +111,7 @@ test('text accents and captions remain readable on dark insight panels',async()=
   const browser=await chromium.launch({executablePath,headless:true});
   const dir=fs.mkdtempSync(path.join(os.tmpdir(),'pi-contrast-test-'));
   try {
-    const {htmlPath}=saveCompanion({assetsDir:dir,filename:'contrast.html',title:'Contrast',htmlContent:wrap('<aside class="pi-insight"><span class="pi-accent">Key term</span><p class="pi-equation">3/4</p><p class="pi-caption">Supporting explanation</p><a href="#">Explore</a></aside>')});
+    const {htmlPath}=await saveCompanion({assetsDir:dir,filename:'contrast.html',title:'Contrast',htmlContent:wrap('<aside class="pi-insight"><span class="pi-accent">Key term</span><p class="pi-equation">3/4</p><p class="pi-caption">Supporting explanation</p><a href="#">Explore</a></aside>')});
     const page=await browser.newPage();
     await page.setContent(fs.readFileSync(htmlPath,'utf8'));
     const ratios=await page.evaluate(()=>{

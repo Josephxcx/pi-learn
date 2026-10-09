@@ -14,7 +14,7 @@ const plant=fs.readFileSync(path.join(root,'examples/source/plant-deficiencies.h
   .replace('<!-- plant-illustration -->', fs.readFileSync(path.join(root,'examples/source/plant-nutrient-mobility.svg'),'utf8'));
 
 for (const [filename,title,htmlContent] of [['fractions.html','Understand fractions',fractions],['nitrogen-cycle.html','Nitrogen transformations',nitrogen],['plant-deficiencies.html','Plant deficiency patterns',plant]]) {
-  const saved=saveCompanion({assetsDir,filename,title,htmlContent});
+  const saved=await saveCompanion({assetsDir,filename,title,htmlContent});
   if(process.argv.includes('--verify')) {
     const result=await verifyCompanion(saved.htmlPath,path.join(root,'.visual-previews'));
     console.log(JSON.stringify({filename,...result}));
