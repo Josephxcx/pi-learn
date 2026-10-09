@@ -82,16 +82,19 @@ test('cancellation during a lock wait cannot append a lesson afterward', async t
   const attempted = new Promise<void>(resolve => {onAttempt=resolve;});
   const originalOpen = fs.open;
   fs.open = async (...args:Parameters<typeof fs.open>) => {
-    if(args[0]===lockPath)onAttempt();
-    return originalOpen(...args);
+    try { return await originalOpen(...args); }
+    finally { if(args[0]===lockPath)onAttempt(); }
   };
   const controller = new AbortController();
   const pending = call('append_lesson_node',{nodeTitle:'Cancelled',explanationMarkdown:'Must not persist'},'waiting',undefined,controller.signal);
   const outcome = pending.then(()=>null,error=>error);
   try {await attempted;} finally {fs.open=originalOpen;}
   controller.abort();
+  // Wait for the cancelled open/wait to settle before deleting its target.
+  // Windows can report EPERM when unlink races an in-flight exclusive open.
+  const error = await outcome;
   await fs.unlink(lockPath);
-  assert.match(String(await outcome),/abort/i);
+  assert.match(String(error),/abort/i);
   assert.equal(await fs.readFile(active.notePath,'utf8'),before);
   assert.equal(await fs.readFile(active.progressPath,'utf8'),beforeProgress);
   await assert.rejects(fs.stat(`${active.notePath}.pi-learn.transaction.json`),{code:'ENOENT'});
