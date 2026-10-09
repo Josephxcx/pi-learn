@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="760" viewBox="0 0 1200 760" role="img" aria-labelledby="title desc">
+  <title id="title">Fundamental Rights and Directive Principles: two constitutional routes</title>
+  <desc id="desc">The left lane connects Part III Fundamental Rights with Supreme Court remedies under Article 32. The right lane connects Part IV Directive Principles with the State's lawmaking duty under Article 37. Directive Principles are not court-enforceable as such, but implementing laws may be enforceable. The lanes do not express a hierarchy.</desc>
+  <defs>
+    <marker id="arrow-teal" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto" markerUnits="userSpaceOnUse">
+      <path d="M1 1 L8 5 L1 9" fill="none" stroke="#236B68" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    </marker>
+    <marker id="arrow-ochre" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto" markerUnits="userSpaceOnUse">
+      <path d="M1 1 L8 5 L1 9" fill="none" stroke="#966A20" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    </marker>
+  </defs>
+  <rect x="0" y="0" width="1200" height="760" fill="#FAFAF7"/>
+  <g font-family="DejaVu Sans, sans-serif" fill="#24343B">
+    <text x="64" y="65" font-size="34" font-weight="700">Two constitutional routes</text>
+    <text x="64" y="106" font-size="23" fill="#52646A">The distinction is how a provision operates.</text>
+    <line x1="64" y1="135" x2="1136" y2="135" stroke="#D9E0DC" stroke-width="2"/>
+    <line x1="600" y1="170" x2="600" y2="598" stroke="#D9E0DC" stroke-width="1"/>
+    <g text-anchor="middle">
+      <text x="318" y="195" font-size="28" font-weight="700" fill="#236B68">Fundamental Rights</text>
+      <text x="318" y="233" font-size="23">Part III · Articles 12–35</text>
+      <line x1="318" y1="264" x2="318" y2="326" stroke="#236B68" stroke-width="2.5" marker-end="url(#arrow-teal)"/>
+      <text x="318" y="371" font-size="27" font-weight="700">Article 32</text>
+      <text x="318" y="409" font-size="23">Enforcement of Part III rights</text>
+      <line x1="318" y1="439" x2="318" y2="491" stroke="#236B68" stroke-width="2.5" marker-end="url(#arrow-teal)"/>
+      <text x="318" y="535" font-size="27" font-weight="700">Supreme Court remedies</text>
+      <text x="318" y="573" font-size="23">A court can enforce the right.</text>
+      <text x="881" y="195" font-size="28" font-weight="700" fill="#966A20">Directive Principles</text>
+      <text x="881" y="233" font-size="23">Part IV · Articles 36–51</text>
+      <line x1="881" y1="264" x2="881" y2="326" stroke="#966A20" stroke-width="2.5" marker-end="url(#arrow-ochre)"/>
+      <text x="881" y="371" font-size="27" font-weight="700">Article 37</text>
+      <text x="881" y="409" font-size="23">State duty to apply in lawmaking</text>
+      <line x1="881" y1="439" x2="881" y2="491" stroke="#966A20" stroke-width="2.5" marker-end="url(#arrow-ochre)"/>
+      <text x="881" y="535" font-size="27" font-weight="700">Governance and legislation</text>
+      <text x="881" y="573" font-size="23">The principle is non-justiciable.</text>
+    </g>
+    <line x1="64" y1="620" x2="1136" y2="620" stroke="#D9E0DC" stroke-width="2"/>
+    <text x="64" y="666" font-size="23" font-weight="700">Non-justiciable does not mean unimportant.</text>
+    <text x="64" y="705" font-size="22" fill="#52646A">A law implementing a Directive Principle may create enforceable rights and duties.</text>
+  </g>
+</svg>

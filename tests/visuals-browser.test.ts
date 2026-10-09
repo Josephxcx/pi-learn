@@ -5,7 +5,7 @@ import os from 'node:os';
 import path from 'node:path';
 import {chromium} from 'playwright';
 import {saveCompanion} from '../extensions/visuals/companions.ts';
-const executablePath = process.env.PI_LEARN_BROWSER_PATH || '/usr/bin/chromium';
+const executablePath = process.env.PI_LEARN_BROWSER_PATH || ['/usr/bin/chromium','/usr/bin/chromium-browser'].find(p=>fs.existsSync(p));
 const wrap = (body:string) => `<!doctype html><html><head></head><body><main>${body}</main></body></html>`;
 const quiz = `<form data-pi-quiz><fieldset><legend>Select both even numbers</legend>
 <label class="pi-option"><input type="checkbox" name="q" data-pi-answer="true" data-pi-explanation="Two is divisible by two.">2</label>
@@ -117,7 +117,7 @@ test('text accents and captions remain readable on dark insight panels',async()=
     const ratios=await page.evaluate(()=>{
       const luminance=(rgb:string)=>{
         const channels=rgb.match(/[\d.]+/g)!.slice(0,3).map(v=>Number(v)/255).map(v=>v<=0.04045?v/12.92:((v+0.055)/1.055)**2.4);
-        return channels[0]*0.2126+channels[1]*0.7152+channels[2]*0.0722;
+        return channels[0]!*0.2126+channels[1]!*0.7152+channels[2]!*0.0722;
       };
       const panel=document.querySelector('.pi-insight')!;
       const background=luminance(getComputedStyle(panel).backgroundColor);

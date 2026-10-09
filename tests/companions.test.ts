@@ -31,14 +31,16 @@ test('rejects traversal, wrong extension, empty content, and symlink overwrite',
     }
     assert.throws(()=>saveCompanion({assetsDir:dir,filename:'a.html',title:'Test',htmlContent:'<div>fragment</div>'}));
     const target = path.join(dir,'target.txt');fs.writeFileSync(target,'keep');
+    if (process.platform !== 'win32') {
     fs.symlinkSync(target,path.join(dir,'link.html'));
     assert.throws(()=>saveCompanion({assetsDir:dir,filename:'link.html',title:'Test',htmlContent:doc}));
     assert.equal(fs.readFileSync(target,'utf8'),'keep');
+    }
   } finally {fs.rmSync(dir,{recursive:true,force:true});}
 });
 test('builds portable Markdown links relative to nested notes',async()=>{
   const {companionLink}=await import(modulePath);
-  assert.equal(companionLink('/vault/Exam/Unit/note.md','/vault/Exam/assets/a b.html','Parts [test]'), '[Parts \\[test\\]](../assets/a%20b.html)');
+  assert.equal(companionLink(path.resolve('vault/Exam/Unit/note.md'),path.resolve('vault/Exam/assets/a b.html'),'Parts [test]'), '[Parts \\[test\\]](../assets/a%20b.html)');
 });
 
 test('preserves SVG accessibility titles while replacing the document title',async()=>{

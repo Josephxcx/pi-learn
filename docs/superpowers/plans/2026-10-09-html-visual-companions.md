@@ -55,3 +55,16 @@
 - Live Obsidian is unavailable in this environment; plugin compatibility remains an explicitly documented manual check.
 - Final regression coverage also verifies asset routing after `/md-log`, clearing stale quiz feedback, and saved/unavailable verification reporting.
 - Final validation: 13/13 tests passed; all three representative lessons passed desktop and 400px browser checks; actual screenshot dimensions checked; runtime package contents verified.
+
+## Integration with the upstream production refactor
+
+Integrated upstream `77edb13` after the original visual implementation:
+
+- Registered visual tools through `extensions/bindings/visual-tools.ts` and the shared typed Pi tool wrapper.
+- Resolved active note/assets through the caller's session-scoped `LearningStore`; HTML writes use shared locks and atomic replacement.
+- Persisted companion filenames/titles in lesson progress so reviews and managed repairs retain links.
+- Preserved upstream exam context, neutral retrieval practice, review scheduling, personal annotations, and recovery behavior.
+- Retained bundled frontend-design guidance and topic-adaptive HTML components; updated teaching guidance to respect optional retrieval practice.
+- Included visual assets in the explicit package file list and Chromium setup in the existing cross-platform CI matrix.
+
+Validation: strict TypeScript passed; 89 tests passed with one macOS-only test skipped on Linux; all three examples passed browser verification at 1200px and 400px; package contents and whitespace checked. Live Obsidian and the remote OS/Node/Pi CI matrix remain unverified locally.

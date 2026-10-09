@@ -5,10 +5,10 @@ Use one companion per concept and link it from the existing lesson. The visual i
 ## Workflow
 1. Load `get_visual_design_guidance()` once per session to apply the bundled frontend-design skill and teaching constraints. Then call `get_visual_components()` for HTML patterns.
 2. Create a complete HTML document with doctype, head, body, and a main landmark. Styles and control scripts below are injected by `save_visual_html`; do not copy their implementation into each lesson.
-3. Call `save_visual_html(filename, htmlContent, title, includeMath?, verify?)`. Default verification is on. Files save in the current exam assets folder. Use a topic-specific filename to avoid overwriting other concepts.
+3. Call `save_visual_html(filename, htmlContent, title, includeMath?, verify?)`. Default verification is on. Files save in the active note’s assets folder. Use a topic-specific filename to avoid overwriting other concepts.
 4. Inspect returned screenshots with available image tools. Fix overlap, clipping, and misleading geometry. Also check claims and mathematical relationships separately. `passed` means browser smoke checks passed, not that an AI reviewed the image or proved the content.
 5. Log with `append_lesson_node(..., visualFilename, visualTitle)`. The note gets a relative Markdown link. A saved companion with unavailable checks must be described as unverified.
-6. Continue the existing terminal active-recall gate. HTML practice never advances the tutor.
+6. Continue neutral retrieval practice in chat, respecting requests to skip it. HTML practice does not record attempts or change Pi review status.
 
 ## Visual language
 Warm ivory background, ink headings, cobalt for the active concept, orange for numbered annotations. Serif headings with readable system body text. Use restrained emphasis, generous spacing, and diagrams large enough to read in a narrow pane. Avoid decorative animation. CSS variables: `--pi-paper`, `--pi-ink`, `--pi-cobalt`, `--pi-orange`, `--pi-muted`, `--pi-line`, `--pi-mint`. For text use `--pi-text-accent` and `--pi-text-muted`; these switch to light colours inside dark `pi-insight` panels. Reserve cobalt for light-background text and diagram fills.
