@@ -504,9 +504,21 @@ export default function mdLogExtension(pi: ExtensionAPI) {
   });
 
   pi.registerTool({
+    name: "get_visual_design_guidance",
+    label: "Lesson Visual Design Guidance",
+    description: "Read the bundled frontend-design skill and Pi-learn teaching constraints once per session before creating lesson design, art, visuals, diagrams, roadmaps, or quiz presentation. Works offline without a globally installed skill.",
+    parameters: Type.Object({}),
+    async execute() {
+      const skillPath = fileURLToPath(new URL("../skills/frontend-design/SKILL.md", import.meta.url));
+      const adaptationPath = fileURLToPath(new URL("../skills/pi-learn/references/visual-design.md", import.meta.url));
+      return { content: [{ type: "text", text: fs.readFileSync(skillPath, "utf-8") + "\n\n" + fs.readFileSync(adaptationPath, "utf-8") }] };
+    },
+  });
+
+  pi.registerTool({
     name: "get_visual_components",
     label: "HTML Visual Components",
-    description: "Read the adaptive editorial visual system and HTML patterns for diagrams, steps, sliders, and practice MCQs. Shared styles/scripts are injected by save_visual_html.",
+    description: "After reading get_visual_design_guidance once per session, read the adaptive editorial visual system and HTML patterns for diagrams, steps, sliders, and practice MCQs. Shared styles/scripts are injected by save_visual_html.",
     parameters: Type.Object({}),
     async execute() {
       const guidePath = fileURLToPath(new URL("../skills/pi-learn/references/html-visuals.md", import.meta.url));
@@ -517,7 +529,7 @@ export default function mdLogExtension(pi: ExtensionAPI) {
   pi.registerTool({
     name: "save_visual_html",
     label: "Save HTML Visual Companion",
-    description: "Save a self-contained HTML lesson companion with shared editorial styles and practice controls. Optionally verify it offline at desktop/narrow widths. Browser checks do not establish factual correctness or Obsidian compatibility.",
+    description: "Use get_visual_design_guidance before authoring. Save a self-contained HTML lesson companion with shared editorial styles and practice controls. Optionally verify it offline at desktop/narrow widths. Browser checks do not establish factual correctness or Obsidian compatibility.",
     parameters: Type.Object({
       filename: Type.String({ description: "Plain filename ending in .html, without directory paths." }),
       htmlContent: Type.String({ description: "Complete HTML document. Use get_visual_components for optional shared classes and controls; custom topic layouts are supported." }),
@@ -551,7 +563,7 @@ export default function mdLogExtension(pi: ExtensionAPI) {
   pi.registerTool({
     name: "save_diagram_svg",
     label: "Save SVG Diagram",
-    description: "Save an SVG diagram to the active exam assets/ directory and generate a temporary PNG preview in /tmp.",
+    description: "Use get_visual_design_guidance before designing. Save an SVG diagram to the active exam assets/ directory and generate a temporary PNG preview in /tmp.",
     parameters: Type.Object({
       filename: Type.String({ description: "Filename ending in .svg." }),
       svgContent: Type.String({ description: "Complete valid SVG source markup." }),

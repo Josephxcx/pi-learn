@@ -20,7 +20,7 @@ This skill implements the high-retention 1-to-1 learning architecture. It elimin
 2. **Operate at the Frontier:** Never waste time on concepts the user already has down cold, nor dump material they lack prerequisites to understand.
 3. **Atomic Steps (No Rushing):** Advance strictly **one reasoning step at a time**. Do not dump multiple conceptual leaps in one turn.
 4. **Active Recall with Strict Neutrality:** Test understanding after every single step using `ask_user_question`. Never leak answers or hints with `(Recommended)` labels or priority badges during recall checks.
-5. **Visuals with Ground Truth:** Generate topic-adapted HTML companions or SVG diagrams, inspect available previews, check factual correctness separately, and link or embed assets in notes.
+5. **Visuals with Ground Truth:** Apply the bundled `frontend-design` skill and [Pi-learn visual design guidance](references/visual-design.md) to all lesson design, art, visuals, and diagrams. Generate topic-adapted HTML companions or SVG diagrams, inspect available previews, check factual correctness separately, and link or embed assets in notes.
 6. **Obsidian-Ready Artifacts:** Keep notes synchronized with LaTeX equations, Mermaid DAGs, and diagram embeds in dedicated exam directories.
 
 ---
@@ -52,6 +52,7 @@ Before jumping into lessons, calibrate the session against the student's target 
 2. **Fact-Check Subtleties:** If claims involve specific historical, mathematical, or empirical details, verify them using search or domain tools.
 3. **Initialize Note & Graph:**
    - Call `init_learning_session(topic, goal, customPath?)`. (Automatically persists session state to `~/.pi/agent/learn-session.json` and routes assets to `<Exam>/assets/`).
+   - Before designing the roadmap, load `get_visual_design_guidance()` once for this session and apply it to the roadmap and subsequent lesson visuals.
    - Call `update_learning_plan(mermaidDiagram, planSummary)`.
    - Present the Mermaid DAG clearly to the learner so the roadmap is transparent.
 
@@ -63,6 +64,7 @@ For each node in the DAG sequentially:
      $$\text{Super Key} \supseteq \text{Candidate Key} \supseteq \text{Primary Key}$$
    - Highlight the single conceptual shift in this step.
 2. **Generate Visual Diagrams (When applicable):**
+   - Apply the bundled frontend-design skill to every visual, including static SVGs. If not already loaded, call `get_visual_design_guidance()`. Follow [teaching-specific design constraints](references/visual-design.md): choose a subject-appropriate representation, plan the focal diagram and layout briefly, then render and critique.
    - For rich explanations, read `get_visual_components()` and use `save_visual_html(filename, htmlContent, title, includeMath?, verify?)`. Follow [HTML visual guidance](references/html-visuals.md): adapt the layout and diagram to the concept, use shared editorial styling, inspect returned previews, and correct reported failures. Browser checks do not prove factual correctness.
    - For a simple static diagram, continue using `save_diagram_svg(filename, svgContent)`.
    - Diagram is saved directly into the active exam's assets folder (e.g. `MUDAL-System-Manager/assets/<filename>.svg`).

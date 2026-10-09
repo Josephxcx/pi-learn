@@ -32,7 +32,8 @@
       "./extensions/md-log.ts"
     ],
     "skills": [
-      "./skills/pi-learn"
+      "./skills/pi-learn",
+      "./skills/frontend-design"
     ]
   },
   "peerDependencies": {

@@ -19,6 +19,9 @@ const payload=(r:any)=>JSON.parse(r.content[0].text);
 test('HTML tools integrate with nested lesson notes and existing SVG logging',async()=>{
   try {
     const init=payload(await run('init_learning_session',{topic:'Fractions',goal:'Understand equal parts',customPath:'Exam/Unit/fractions.md'}));
+    const design=await run('get_visual_design_guidance',{});
+    assert.match(design.content[0].text, /Ground your designs in the subject matter/);
+    assert.match(design.content[0].text, /scientific accuracy/i);
     const components=await run('get_visual_components',{});
     assert.match(components.content[0].text,/data-pi-quiz/);
     const save=payload(await run('save_visual_html',{filename:'fractions.html',title:'Fractions',htmlContent:'<!doctype html><html><head></head><body>Hello</body></html>',verify:false}));

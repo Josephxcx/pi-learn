@@ -314,3 +314,11 @@ npm run visual:verify
 The browser tests require the optional Playwright dependency and a Chromium installation. Previews from `visual:verify` are written to the ignored `.visual-previews/` directory. See [HTML authoring guidance](skills/pi-learn/references/html-visuals.md) for the component contracts.
 
 KaTeX is MIT licensed; Playwright is Apache-2.0 licensed. Their installed packages include the upstream licence texts. The shared Pi-learn components use this repository's MIT licence. Lucide, Rough.js, D3, and Three.js are not required for this first implementation; add them only when a lesson needs capabilities beyond native SVG/JavaScript.
+
+### Design guidance for all lesson visuals
+
+The package now bundles [frontend-design](skills/frontend-design/SKILL.md) from [anthropics/skills on skills.sh](https://skills.sh/anthropics/skills/frontend-design), alongside the Pi-learn teaching skill. Installing Pi-learn exposes both skills; no separate global frontend-design installation is required.
+
+Before creating lesson design, art, visuals, diagrams, Mermaid roadmaps, or quiz presentation, the tutor reads `get_visual_design_guidance()` once per session. It returns the upstream design skill plus [Pi-learn teaching adaptations](skills/pi-learn/references/visual-design.md). The workflow uses a short subject-specific design note, renders the visual, and critiques it for clarity. HTML component contracts remain available through `get_visual_components()`.
+
+The teaching adaptations preserve factual accuracy, neutral quiz choices, readable contrast, offline assets, and topic-specific layouts. The shared editorial identity is a starting point; diagrams should match their subjects. The bundled upstream skill is Apache-2.0 licensed, with its original licence and provenance retained in `skills/frontend-design/`.

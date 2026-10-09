@@ -3,7 +3,7 @@
 Use one companion per concept and link it from the existing lesson. The visual identity is bold editorial; the explanation structure must adapt to the subject. Do not force a diagram into a fractions layout. Prefer the shared components, but use custom grids, SVG, tables, and JavaScript when needed.
 
 ## Workflow
-1. Call `get_visual_components` once when authoring HTML lessons.
+1. Load `get_visual_design_guidance()` once per session to apply the bundled frontend-design skill and teaching constraints. Then call `get_visual_components()` for HTML patterns.
 2. Create a complete HTML document with doctype, head, body, and a main landmark. Styles and control scripts below are injected by `save_visual_html`; do not copy their implementation into each lesson.
 3. Call `save_visual_html(filename, htmlContent, title, includeMath?, verify?)`. Default verification is on. Files save in the current exam assets folder. Use a topic-specific filename to avoid overwriting other concepts.
 4. Inspect returned screenshots with available image tools. Fix overlap, clipping, and misleading geometry. Also check claims and mathematical relationships separately. `passed` means browser smoke checks passed, not that an AI reviewed the image or proved the content.
