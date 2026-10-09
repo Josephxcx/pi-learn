@@ -154,19 +154,29 @@ export async function withFileLock<T>(target: string, work: () => Promise<T>, si
   await assertSafePath(lockPath);
   await fs.mkdir(path.dirname(lockPath), { recursive: true });
   const token = JSON.stringify({ pid: process.pid, token: randomUUID(), createdAt: new Date().toISOString() });
-  const deadline = Date.now() + 5000;
+  // Durable note transactions can queue behind several writers on slower disks.
+  const deadline = Date.now() + 30_000;
   for (;;) {
     signal?.throwIfAborted();
     await assertSafePath(lockPath);
+    let handle;
     try {
-      const handle = await fs.open(lockPath, 'wx', 0o600);
-      try { await handle.writeFile(token); } finally { await handle.close(); }
-      break;
+      handle = await fs.open(lockPath, 'wx', 0o600);
     } catch (error) {
-      if (!(error instanceof Error && 'code' in error && error.code === 'EEXIST')) throw error;
-      if (Date.now() >= deadline) throw new Error(`Storage is locked: ${lockPath}. If its owner has stopped, inspect and remove the stale lock before retrying.`);
+      const code = error instanceof Error && 'code' in error ? error.code : undefined;
+      // Windows can deny an open briefly while another writer unlinks the lock.
+      // Retry acquisition only; persistent permission errors retain their cause.
+      const sharingConflict = process.platform === 'win32' && code === 'EPERM';
+      if (code !== 'EEXIST' && !sharingConflict) throw error;
+      if (Date.now() >= deadline) {
+        if (sharingConflict) throw error;
+        throw new Error(`Storage is locked: ${lockPath}. If its owner has stopped, inspect and remove the stale lock before retrying.`);
+      }
       await delay(15 + Math.floor(Math.random() * 20), undefined, {signal});
+      continue;
     }
+    try { await handle.writeFile(token); } finally { await handle.close(); }
+    break;
   }
   try { signal?.throwIfAborted(); return await work(); } finally {
     if (await readOptional(lockPath) === token) await fs.unlink(lockPath);

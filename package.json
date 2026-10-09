@@ -57,7 +57,8 @@
     "README.md",
     "LICENSE",
     "assets/",
-    "scripts/build-visual-examples.mts"
+    "scripts/build-visual-examples.mts",
+    "docs/images/"
   ],
   "peerDependenciesMeta": {
     "@earendil-works/pi-coding-agent": {

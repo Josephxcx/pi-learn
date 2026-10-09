@@ -5,7 +5,7 @@ import os from 'node:os';
 import path from 'node:path';
 import { LearningStore } from '../extensions/learning/store.ts';
 import { resolveLearningConfig } from '../extensions/learning/config.ts';
-import { assertSafePath, atomicWriteFile, fileHash, readOptional } from '../extensions/learning/files.ts';
+import { assertSafePath, atomicWriteFile, fileHash, readOptional, withFileLock } from '../extensions/learning/files.ts';
 import type { ReviewInput } from '../extensions/learning/store.ts';
 
 async function fixture(t: test.TestContext) {
@@ -428,4 +428,42 @@ test('cancelling a resume before pointer publication keeps the previous active n
     await assert.rejects(cancellable.init('session',{topic:'Existing B',goal:'Resume later'}),/abort/i);
     assert.equal((await store.status('session'))?.notePath,a.notePath);
   } finally {fs.mkdir=originalMkdir;}
+});
+
+
+test('Windows lock acquisition retries a transient deletion-sharing error', async t => {
+  const {root}=await fixture(t);
+  const target=path.join(await fs.realpath(root),'shared');
+  const originalOpen=fs.open;
+  const platform=Object.getOwnPropertyDescriptor(process,'platform')!;
+  let failures=0, writes=0;
+  Object.defineProperty(process,'platform',{...platform,value:'win32'});
+  fs.open=async (...args:Parameters<typeof fs.open>)=>{
+    if(args[0]===`${target}.lock` && failures++ < 2)throw Object.assign(new Error('Deletion pending'),{code:'EPERM'});
+    return originalOpen(...args);
+  };
+  try {
+    await withFileLock(target,async()=>{writes++;});
+    assert.equal(failures,3);
+    assert.equal(writes,1);
+    await assert.rejects(fs.stat(`${target}.lock`),{code:'ENOENT'});
+  } finally {fs.open=originalOpen;Object.defineProperty(process,'platform',platform);}
+});
+
+test('persistent Windows lock permission errors keep their original cause', async t => {
+  const {root}=await fixture(t);
+  const target=path.join(await fs.realpath(root),'denied');
+  const platform=Object.getOwnPropertyDescriptor(process,'platform')!;
+  const originalOpen=fs.open, originalNow=Date.now;
+  const denied=Object.assign(new Error('Permission denied'),{code:'EPERM'});
+  let now=0;
+  Object.defineProperty(process,'platform',{...platform,value:'win32'});
+  Date.now=()=>now;
+  fs.open=async (...args:Parameters<typeof fs.open>)=>{
+    if(args[0]===`${target}.lock`){now=31_000;throw denied;}
+    return originalOpen(...args);
+  };
+  try {
+    await assert.rejects(withFileLock(target,async()=>assert.fail('Must not write')),error=>error===denied);
+  } finally {fs.open=originalOpen;Date.now=originalNow;Object.defineProperty(process,'platform',platform);}
 });

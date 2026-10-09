@@ -157,3 +157,8 @@ Open the page in a browser, or install Obsidian's HTML Viewer community plugin a
 Browser verification uses optional Playwright/Chromium. Install the browser with `npx playwright install chromium`, or set `PI_LEARN_BROWSER_PATH` to an existing Chromium executable. Saving still works if the browser is unavailable, returning `verification.status: unavailable`; `verify: false` explicitly skips checks. Neither state means verified. Checks run offline at 1200px and 400px, inspect script errors, external dependencies and overflow, exercise standard controls, and return temporary screenshots. Inspect those screenshots and check factual accuracy separately. Custom interactions need their own tests.
 
 Developer examples: `npm run visual:examples` rebuilds the three standalone examples; `npm run visual:verify` also checks them in Chromium. The package includes runtime styles and scripts under `assets/visual-companion`, and the upstream frontend-design skill with its Apache-2.0 license and provenance under `skills/frontend-design`.
+
+
+### Repository visuals
+
+The README uses an SVG cover and compressed screenshots of the included companions. To regenerate them after changing the examples, run `node scripts/build-repo-visuals.mts` from a repository checkout with Playwright and Chromium installed. The editable cover composition lives in that script; the plant illustration comes from `examples/source/plant-nutrient-mobility.svg`. Inspect generated images before committing. The small `docs/images` assets are packaged so README images also work in local installations.
