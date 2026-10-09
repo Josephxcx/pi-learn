@@ -1,0 +1,178 @@
+<!doctype html>
+<html lang="en"><head><!-- pi-learn:shared:start --><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Plant deficiency patterns</title><style>/* Pi-learn bold editorial visual system. Topic-specific layouts remain flexible. */
+:root{color-scheme:light;--pi-paper:#faf7ef;--pi-ink:#112035;--pi-cobalt:#1249db;--pi-orange:#ed5b16;--pi-muted:#536175;--pi-line:#d9d5ca;--pi-mint:#d8eee4;--pi-text-accent:var(--pi-cobalt);--pi-text-muted:var(--pi-muted);font-family:system-ui,-apple-system,sans-serif;color:var(--pi-ink);background:var(--pi-paper)}
+*{box-sizing:border-box}body{background:var(--pi-paper);color:var(--pi-ink);margin:0;padding:clamp(16px,4vw,52px)}main{max-width:1200px;margin:auto}header.pi-header{display:flex;justify-content:space-between;gap:1rem;align-items:center;border-bottom:1px solid var(--pi-line);padding-bottom:18px;margin-bottom:32px}.pi-brand{font:bold 24px Georgia,serif}.pi-brand span{color:var(--pi-orange)}.pi-eyebrow{font-size:12px;text-transform:uppercase;letter-spacing:.16em;font-weight:700}h1,h2,h3{font-family:Georgia,'Times New Roman',serif;line-height:1.06;overflow-wrap:anywhere}h1{font-size:clamp(36px,5.5vw,72px);margin:0 0 24px;letter-spacing:-.04em}h2{font-size:clamp(26px,3vw,40px)}h3{font-size:24px}p,li{line-height:1.65}a{color:var(--pi-text-accent)}.pi-accent{color:var(--pi-text-accent)}.pi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:clamp(20px,3vw,40px);align-items:start}.pi-hero{margin:28px 0}.pi-diagram{min-width:0;display:flex;justify-content:center;align-items:center;padding:18px;background:#fff9;border:1px solid var(--pi-line);border-radius:6px}.pi-diagram svg{display:block;width:100%;height:auto;max-width:640px}.pi-insight{--pi-text-accent:#aac5ff;--pi-text-muted:#c0cddd;background:var(--pi-ink);color:var(--pi-paper);padding:24px;border-radius:8px}.pi-insight h2{margin-top:0}.pi-insight a{color:var(--pi-text-accent)}.pi-number{display:inline-grid;place-items:center;background:var(--pi-orange);color:white;border-radius:50%;width:32px;height:32px;font:bold 17px system-ui}.pi-steps{border-top:1px solid var(--pi-line);margin-top:32px;padding-top:24px}.pi-step{border-left:3px solid var(--pi-orange);padding:0 18px;margin:20px 0}.pi-controls{display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin:20px 0}button{font:inherit;background:var(--pi-cobalt);color:white;border:0;border-radius:5px;padding:12px 18px;cursor:pointer}button:disabled{opacity:.5;cursor:default}button.pi-secondary{background:transparent;color:var(--pi-ink);border:1px solid var(--pi-line)}:focus-visible{outline:3px solid var(--pi-orange);outline-offset:4px}input[type=range]{accent-color:var(--pi-text-accent);max-width:100%}input[type=radio],input[type=checkbox]{accent-color:var(--pi-text-accent);width:18px;height:18px;flex-shrink:0}.pi-quiz{border-top:1px solid var(--pi-line);padding-top:28px;margin-top:36px}.pi-quiz fieldset{border:0;padding:0;margin:0;min-width:0}.pi-quiz legend{font:bold 24px Georgia,serif;margin-bottom:16px}.pi-option{display:flex;gap:12px;align-items:flex-start;padding:14px;margin:8px 0;border:1px solid var(--pi-line);border-radius:5px;cursor:pointer}.pi-option:has(input:checked){border-color:var(--pi-text-accent);background:#1249db0a}.pi-feedback{padding:16px;background:var(--pi-mint);line-height:1.6}.pi-table-scroll{overflow-x:auto;max-width:100%}table{border-collapse:collapse;width:100%}th,td{text-align:left;padding:14px;border-bottom:1px solid var(--pi-line);vertical-align:top}th{background:#1120350a}code{overflow-wrap:anywhere}.pi-equation{font-size:clamp(24px,4vw,44px);color:var(--pi-text-accent)}.pi-caption{color:var(--pi-text-muted);font-size:14px}[hidden]{display:none!important}
+@media(max-width:600px){body{padding:18px}.pi-header{flex-wrap:wrap}h1{font-size:40px}.pi-diagram{padding:10px}.pi-insight{padding:20px}button{min-height:44px}.pi-steps{margin-top:24px}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
+</style><!-- pi-learn:shared:end --><style>
+body{--pi-paper:#f7f8f0;--pi-ink:#203829;--pi-muted:#627464;--pi-text-muted:#627464}
+.plant-header{display:flex;justify-content:space-between;align-items:baseline;gap:16px;border-bottom:1px solid #ccd5c6;padding-bottom:18px;margin-bottom:36px}.plant-header p{margin:0;color:#627464;font-size:14px}.plant-intro{max-width:760px}.plant-intro h1{font-family:Palatino,'Palatino Linotype','Book Antiqua',Georgia,serif;font-weight:500;font-size:clamp(40px,5.6vw,68px);letter-spacing:-.035em;line-height:1.12;max-width:680px}.plant-intro>p{font-size:18px;max-width:660px}
+.plant-plate{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(0,1fr);gap:clamp(24px,4vw,56px);align-items:center;margin:30px 0 44px}.plant-specimen{margin:0;min-width:0}.plant-specimen svg{display:block;width:100%;height:auto;max-height:750px}.plant-specimen figcaption{font-size:13px;color:#627464;line-height:1.65;max-width:480px;padding:0 18px}.plant-specimen [data-tissue]{transition:opacity .2s}.plant-specimen [data-tissue][data-active=false]{opacity:.52}.plant-specimen [data-tissue][data-active=true]{opacity:1}.plant-context{padding:24px 0;border-top:2px solid #61805b}.plant-context h2{font-family:Palatino,'Palatino Linotype','Book Antiqua',Georgia,serif;font-size:34px;line-height:1.2;margin:0 0 12px}.plant-context>p{max-width:48ch}.plant-controls{display:flex;flex-wrap:wrap;gap:8px;margin:24px 0}.plant-controls button{background:transparent;color:#203829;border:1px solid #abbba4;padding:10px 14px;font-size:14px;border-radius:24px}.plant-controls button[aria-pressed=true]{background:#203829;border-color:#203829;color:#f7f8f0}.plant-focus{background:#eaf0e1;padding:22px;border-left:3px solid #54774a;min-height:225px}.plant-focus h3{font:600 22px system-ui,sans-serif;margin:0 0 12px}.plant-focus p{margin:0}.plant-note{color:#627464;font-size:14px;margin-top:18px}.plant-comparison{border-top:1px solid #ccd5c6;padding-top:20px}.plant-comparison h2{font-family:Palatino,'Palatino Linotype','Book Antiqua',Georgia,serif;font-weight:500}.plant-comparison table{font-size:15px}.plant-comparison caption{text-align:left;padding-bottom:14px}.plant-comparison th{background:#eaf0e1}
+@media(max-width:680px){.plant-header{flex-wrap:wrap;margin-bottom:26px}.plant-header p{font-size:13px}.plant-plate{grid-template-columns:1fr;gap:20px}.plant-intro h1{font-size:42px}.plant-specimen svg{max-height:none}.plant-context{padding-top:20px}.plant-focus{min-height:0}.plant-specimen figcaption{padding:0}.plant-comparison th,.plant-comparison td{padding:10px}}
+@media(prefers-reduced-motion:reduce){.plant-specimen [data-tissue]{transition:none}}
+</style></head><body><main>
+<header class="plant-header"><div class="pi-brand"><span>π</span> Pi-learn</div><p>Plant nutrition / Nutrient mobility</p></header>
+<section class="plant-intro"><h1>Read the plant,<br>starting with leaf age.</h1><p>Where a symptom appears helps explain which nutrients the plant can move—and which it cannot readily redistribute.</p></section>
+<section class="plant-plate" aria-label="Explore nutrient mobility by tissue age">
+<figure class="plant-specimen"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 680 790" role="img" aria-labelledby="plant-title plant-description">
+<title id="plant-title">A growing plant, from emerging tip to mature leaves and roots</title>
+<desc id="plant-description">An illustrated broadleaf plant with folded new growth, curved leaves, branching veins, petioles and a branching root system. Leader lines identify the growing tip, young leaves and older leaves. The yellow-green colour of lower leaves is illustrative.</desc>
+<defs>
+  <linearGradient id="leaf-young" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#97bb6b"/><stop offset=".48" stop-color="#5f944f"/><stop offset="1" stop-color="#305b39"/></linearGradient>
+  <linearGradient id="leaf-mature" x1="0" y1="0" x2=".85" y2="1"><stop stop-color="#bad083"/><stop offset=".46" stop-color="#61934e"/><stop offset="1" stop-color="#315e3d"/></linearGradient>
+  <linearGradient id="leaf-older" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#dbd37b"/><stop offset=".5" stop-color="#a8b05a"/><stop offset="1" stop-color="#6e8442"/></linearGradient>
+  <linearGradient id="stem-shade"><stop stop-color="#385e37"/><stop offset=".45" stop-color="#82a663"/><stop offset="1" stop-color="#466c42"/></linearGradient>
+  <g id="leaf-broad">
+    <path d="M0 0 Q-16 -10 -27 -17" fill="none" stroke="#62864c" stroke-width="3.5"/>
+    <path d="M-25 -16 C-43 -5 -63 -11 -81 -23 C-101 -30 -105 -43 -119 -55 C-135 -65 -137 -82 -163 -101 C-140 -96 -122 -103 -100 -93 C-79 -91 -65 -78 -52 -66 C-36 -51 -29 -33 -25 -16Z" fill="inherit" stroke="#355c3b" stroke-width="1.2"/>
+    <path d="M-27 -18 C-61 -42 -113 -79 -160 -99" fill="none" stroke="#d2dca0" stroke-width="2.1"/>
+    <g fill="none" stroke="#d1d99b" stroke-width="1.15" opacity=".8">
+      <path d="M-45 -31 Q-43 -41 -49 -58 M-60 -43 Q-61 -61 -75 -79 M-78 -56 Q-84 -77 -104 -90 M-96 -68 Q-108 -88 -128 -97"/>
+      <path d="M-46 -31 Q-63 -26 -76 -28 M-65 -47 Q-86 -40 -103 -43 M-84 -59 Q-105 -53 -119 -57 M-104 -73 Q-124 -70 -138 -79"/>
+    </g>
+    <path d="M-28 -18 Q-65 -8 -95 -32" fill="none" stroke="#eff2ca" stroke-width="1" opacity=".45"/>
+  </g>
+  <g id="leaf-narrow">
+    <path d="M0 0 Q-15 -9 -24 -18" fill="none" stroke="#62864c" stroke-width="3"/>
+    <path d="M-22 -17 C-47 -13 -62 -34 -75 -50 C-91 -68 -98 -95 -116 -115 C-87 -103 -70 -102 -51 -80 C-35 -64 -25 -40 -22 -17Z" fill="url(#leaf-young)" stroke="#466b40" stroke-width="1"/>
+    <path d="M-24 -19 Q-65 -59 -114 -113 M-44 -42 L-40 -61 M-58 -57 L-57 -80 M-76 -77 L-82 -99 M-45 -43 L-59 -37 M-61 -60 L-79 -56 M-80 -83 L-95 -82" fill="none" stroke="#d8e6ad" stroke-width="1.3"/>
+  </g>
+</defs>
+<!-- The stem is tapered and curved; leaves connect through short petioles. -->
+<path d="M326 586 C337 540 329 477 335 422 C342 363 326 306 335 254 C342 202 331 149 335 97 L340 96 C335 151 348 206 343 253 C334 310 350 366 343 424 C336 481 345 542 335 587Z" fill="url(#stem-shade)"/>
+<path d="M338 111 C337 244 333 278 340 360" fill="none" stroke="#b2c790" stroke-width="1.3" opacity=".7"/>
+<!-- Mid-age leaves, deliberately varied in size and orientation. -->
+<g opacity=".96">
+  <use href="#leaf-broad" transform="translate(336 340) rotate(-8) scale(.93 .91)" fill="url(#leaf-mature)"/>
+  <use href="#leaf-broad" transform="translate(344 322) rotate(5) scale(-.98 .92)" fill="url(#leaf-mature)"/>
+</g>
+<g data-tissue="older" data-active="true">
+  <use href="#leaf-broad" transform="translate(335 474) rotate(-15) scale(1.18 1.12)" fill="url(#leaf-older)"/>
+  <use href="#leaf-broad" transform="translate(341 445) rotate(18) scale(-1.12 1.16)" fill="url(#leaf-older)"/>
+</g>
+<g data-tissue="young" data-active="false">
+  <use href="#leaf-narrow" transform="translate(335 230) rotate(8) scale(.92)"/>
+  <use href="#leaf-narrow" transform="translate(340 204) rotate(14) scale(-.78 .8)"/>
+</g>
+<g data-tissue="tip" data-active="false">
+  <path d="M337 106 C319 85 316 69 323 44 C337 63 345 77 337 106Z" fill="#81aa5c" stroke="#486c3d"/>
+  <path d="M337 107 C334 83 342 65 355 56 C357 81 353 100 337 107Z" fill="#4e803f" stroke="#385f34"/>
+  <path d="M338 104 Q335 77 323 46 M339 102 Q347 81 354 59" stroke="#c8dfa0" stroke-width="1.4" fill="none"/>
+</g>
+<!-- Root crown and branching laterals beneath the ground plane. -->
+<path d="M331 574 C325 614 337 639 325 679 C322 701 324 726 319 752" fill="none" stroke="#8b6e48" stroke-width="7" stroke-linecap="round"/>
+<g fill="none" stroke="#a08860" stroke-width="2.8" stroke-linecap="round">
+  <path d="M331 592 C310 604 292 611 281 634 C269 651 247 657 235 675 M330 614 C352 623 374 620 387 640 C402 656 417 653 435 669 M331 640 C309 654 299 671 285 690 C275 709 259 714 253 734 M326 673 C346 681 354 705 371 722 M332 589 C350 599 358 607 372 609 M326 696 C313 707 306 727 298 744"/>
+</g>
+<g fill="none" stroke="#b09b78" stroke-width="1.4" stroke-linecap="round">
+  <path d="M285 628 L260 633 L251 649 M273 649 Q246 647 229 659 M249 663 Q248 684 235 696 M367 625 Q388 616 404 629 M391 644 Q392 670 410 682 M415 657 Q431 649 447 655 M297 674 L277 675 L267 690 M276 708 Q280 724 270 740 M350 698 Q338 718 342 740 M365 714 Q389 713 399 729 M352 601 L355 587 M312 709 Q291 708 281 719"/>
+</g>
+<path d="M145 574 Q245 571 319 575 M349 575 Q446 572 545 574" fill="none" stroke="#b6c0ac" stroke-width="1.4" stroke-dasharray="4 6"/>
+<!-- Labels are kept outside the foliage, with endpoints at the relevant tissue. -->
+<g class="plant-leaders" fill="none" stroke="#70806b" stroke-width="1.3">
+  <path d="M453 61 H404 L348 78"/><path d="M104 164 H207 L281 170"/><path d="M475 354 H530 L490 410"/>
+</g>
+<g fill="#476046"><circle cx="348" cy="78" r="3"/><circle cx="281" cy="170" r="3"/><circle cx="490" cy="410" r="3"/></g>
+<g fill="#203829" font-family="system-ui,sans-serif" font-size="27">
+  <text x="458" y="51">Growing tip</text><text x="34" y="155">Young leaves</text><text x="458" y="340">Older leaves</text>
+</g>
+<text x="460" y="604" fill="#627464" font-family="system-ui,sans-serif" font-size="21">Root uptake</text>
+</svg>
+<figcaption>Illustrative broadleaf plant. The lower-leaf colour draws attention to older tissue; it does not establish a nutrient diagnosis.</figcaption></figure>
+<div class="plant-context"><h2>Different tissue.<br>Different clues.</h2><p>Select a part of the plant to connect its age with nutrient movement.</p>
+<div class="plant-controls" role="group" aria-label="Choose plant tissue"><button type="button" data-plant-region="tip" aria-pressed="false">Growing tip</button><button type="button" data-plant-region="young" aria-pressed="false">Young leaves</button><button type="button" data-plant-region="older" aria-pressed="true">Older leaves</button></div>
+<div class="plant-focus" data-plant-explanation aria-live="polite" aria-atomic="true"><h3>Older leaves can supply new growth.</h3><p>Mobile nutrients such as nitrogen and magnesium can be redistributed from older tissue. When supply is limited, deficiency symptoms commonly appear in older leaves first.</p></div>
+<p class="plant-note">Use location as a clue. Crop species, root health, disease, and growing conditions can produce overlapping patterns.</p></div>
+</section>
+<section class="plant-comparison"><h2>Compare the starting point.</h2><div class="pi-table-scroll"><table><caption class="pi-caption">Typical patterns. Confirm with crop context and appropriate soil or tissue testing.</caption><thead><tr><th scope="col">Nutrient</th><th scope="col">Common starting location</th><th scope="col">Typical clue</th></tr></thead><tbody><tr><th scope="row">Nitrogen</th><td>Older leaves</td><td>General yellowing</td></tr><tr><th scope="row">Magnesium</th><td>Older leaves</td><td>Yellowing between veins</td></tr><tr><th scope="row">Iron</th><td>Young leaves</td><td>Yellowing between veins</td></tr><tr><th scope="row">Calcium</th><td>Growing points and developing tissue</td><td>Distorted growth or tissue injury</td></tr></tbody></table></div></section>
+<section class="pi-steps" data-pi-steps aria-label="Diagnostic reasoning steps">
+<article class="pi-step" data-pi-step><h2>Locate the first symptoms.</h2><p>Check whether older leaves, younger leaves, or the growing point are affected first.</p></article>
+<article class="pi-step" data-pi-step hidden><h2>Connect location with mobility.</h2><p>Older-leaf symptoms suggest considering mobile nutrients. Young-tissue symptoms suggest considering less mobile nutrients, along with other possible causes.</p></article>
+<article class="pi-step" data-pi-step hidden><h2>Confirm the pattern.</h2><p>Combine the observation with crop species, root health, soil conditions, and appropriate testing. Similar symptoms can have different causes.</p></article>
+<div class="pi-controls"><button type="button" class="pi-secondary" data-pi-prev>Back</button><button type="button" data-pi-next>Next</button><span role="status" data-pi-step-status></span></div></section>
+<form class="pi-quiz" data-pi-quiz><fieldset><legend>Which observation is consistent with magnesium deficiency?</legend>
+<label class="pi-option"><input type="radio" name="magnesium" data-pi-answer="false" data-pi-explanation="Young-leaf interveinal yellowing more often suggests iron deficiency, among other possibilities.">Yellowing between veins on young leaves only</label>
+<label class="pi-option"><input type="radio" name="magnesium" data-pi-answer="true" data-pi-explanation="Magnesium is mobile, so older leaves commonly show symptoms first.">Yellowing between veins on older leaves</label>
+<label class="pi-option"><input type="radio" name="magnesium" data-pi-answer="false" data-pi-explanation="Visual patterns need supporting evidence.">Any leaf symptom proves magnesium deficiency</label>
+<div class="pi-controls"><button type="submit">Check answer</button><button type="button" class="pi-secondary" data-pi-show-hint>Hint</button><button type="button" class="pi-secondary" data-pi-retry>Retry</button></div><p class="pi-feedback" role="status" data-pi-feedback hidden></p><p data-pi-hint hidden>Consider nutrient mobility and leaf age together.</p></fieldset></form>
+<script>
+(() => {
+  const explanations={
+    older:['Older leaves can supply new growth.','Mobile nutrients such as nitrogen and magnesium can be redistributed from older tissue. When supply is limited, deficiency symptoms commonly appear in older leaves first.'],
+    young:['New leaves depend on incoming supply.','Iron is relatively immobile within the plant. Deficiency therefore commonly appears as yellowing between veins in young leaves, even while older leaves remain greener.'],
+    tip:['Growing tissue needs a steady supply.','Calcium is poorly redistributed from mature tissue. Shortages can affect growing points and developing tissue, causing distorted growth or tissue injury.']
+  };
+  const panel=document.querySelector('[data-plant-explanation]');
+  document.querySelectorAll('[data-plant-region]').forEach(button=>{
+    button.addEventListener('click',()=>{
+      const region=button.dataset.plantRegion;
+      document.querySelectorAll('[data-plant-region]').forEach(control=>control.setAttribute('aria-pressed',String(control===button)));
+      document.querySelectorAll('[data-tissue]').forEach(tissue=>tissue.setAttribute('data-active',String(tissue.dataset.tissue===region)));
+      panel.querySelector('h3').textContent=explanations[region][0];
+      panel.querySelector('p').textContent=explanations[region][1];
+    });
+  });
+})();
+</script>
+</main><!-- pi-learn:shared:start --><script>/* Practice stays local; terminal active recall remains the tutor's progression gate. */
+(() => {
+  document.querySelectorAll('[data-pi-steps]').forEach(group => {
+    const steps = [...group.querySelectorAll('[data-pi-step]')];
+    const previous = group.querySelector('[data-pi-prev]');
+    const next = group.querySelector('[data-pi-next]');
+    const status = group.querySelector('[data-pi-step-status]');
+    let index = 0;
+    const render = () => {
+      steps.forEach((step,i) => {step.hidden = i !== index;});
+      if(previous) previous.disabled = index === 0;
+      if(next) next.disabled = index >= steps.length - 1;
+      if(status) status.textContent = `Step ${index + 1} of ${steps.length}`;
+    };
+    if(!steps.length) return;
+    previous?.addEventListener('click',()=>{index = Math.max(0,index-1);render();});
+    next?.addEventListener('click',()=>{index = Math.min(steps.length-1,index+1);render();});
+    render();
+  });
+  document.querySelectorAll('[data-pi-fraction]').forEach(group => {
+    const slider = group.querySelector('input[type="range"]');
+    const parts = [...group.querySelectorAll('[data-pi-part]')];
+    const output = group.querySelector('[data-pi-fraction-value]');
+    if(!slider || !parts.length) return;
+    slider.min = '0';slider.max = String(parts.length);slider.step = '1';
+    const render = () => {
+      const count = Number(slider.value);
+      parts.forEach((part,i)=>{part.setAttribute('fill',i<count?'var(--pi-cobalt)':'var(--pi-paper)');});
+      if(output) output.textContent = `${count}/${parts.length} = ${Math.round(count/parts.length*100)}%`;
+    };
+    slider.addEventListener('input',render);render();
+  });
+  document.querySelectorAll('form[data-pi-quiz]').forEach(form => {
+    const inputs = [...form.querySelectorAll('input[data-pi-answer]')];
+    const feedback = form.querySelector('[data-pi-feedback]');
+    const hint = form.querySelector('[data-pi-hint]');
+    const retry = form.querySelector('[data-pi-retry]');
+    inputs.forEach(input => input.addEventListener('change', () => {
+      if(feedback) {feedback.hidden=true;feedback.textContent='';}
+    }));
+    form.addEventListener('submit',event=>{
+      event.preventDefault();
+      if(!feedback) return;
+      feedback.hidden = false;
+      if(!inputs.some(input=>input.checked)) {feedback.textContent='Choose an answer before submitting.';return;}
+      const correct = inputs.every(input=>input.checked === (input.dataset.piAnswer === 'true'));
+      const explanations = inputs.filter(input=>input.checked).map(input=>input.dataset.piExplanation || '').filter(Boolean);
+      feedback.textContent = `${correct?'Correct.':'Not quite. Try again.'} ${explanations.join(' ')}`;
+    });
+    form.querySelector('[data-pi-show-hint]')?.addEventListener('click',()=>{if(hint) hint.hidden=!hint.hidden;});
+    retry?.addEventListener('click',()=>{
+      form.reset();if(feedback){feedback.hidden=true;feedback.textContent='';}if(hint) hint.hidden=true;
+      inputs[0]?.focus();
+    });
+  });
+  document.querySelectorAll('[data-pi-math]').forEach(element => {
+    if(typeof katex !== 'undefined') {
+      katex.render(element.textContent,element,{throwOnError:false,displayMode:element.dataset.piMath==='display'});
+    }
+  });
+})();
+</script><!-- pi-learn:shared:end --></body></html>

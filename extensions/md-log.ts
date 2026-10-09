@@ -1,4 +1,5 @@
 import type {ExtensionAPI,ExtensionCommandContext} from '@earendil-works/pi-coding-agent';
+import {registerVisualTools} from './bindings/visual-tools.ts';
 import {registerLearningTools} from './bindings/learning-tools.ts';
 import {registerSyllabusTools} from './bindings/syllabus-tools.ts';
 import {learningContext} from './bindings/shared.ts';
@@ -7,6 +8,7 @@ import {openNote} from './learning/open-note.ts';
 /** Every operation obtains the current Pi session from its context, including after /new or /resume. */
 export default function piLearn(pi:ExtensionAPI):void {
   registerLearningTools(pi);
+  registerVisualTools(pi);
   registerSyllabusTools(pi);
   function message(ctx:ExtensionCommandContext,text:string,error=false):void {
     if(ctx.hasUI)ctx.ui.notify(text,error?'error':'info');

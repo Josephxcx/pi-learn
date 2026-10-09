@@ -132,3 +132,62 @@ test('prioritization selects unit IDs and rejects ambiguous numbers across paper
   const result=await call('prioritize_syllabus',{taxonomyPath:source,unitId:'u2'});
   assert.deepEqual((result.details as {topics:Array<{id:string}>}).topics.map(t=>t.id),['topic2']);
 });
+
+test('HTML companions follow Pi sessions and survive managed note regeneration', async t => {
+  const {root,ctx,call,extension}=await setup(t);
+  const guidance=await call('get_visual_design_guidance',{});
+  assert.match(String(guidance.details),/frontend-design/);
+  assert.match(String((await call('get_visual_components',{})).details),/data-pi-quiz/);
+  const html='<!doctype html><html><head></head><body><main>Parts of a whole</main></body></html>';
+  await assert.rejects(call('save_visual_html',{filename:'parts.html',title:'Parts',htmlContent:html,verify:false}),/active|init_learning_session/i);
+  const first=(await call('init_learning_session',{topic:'Fractions',goal:'Understand parts',customPath:'Nested/fractions.md'})).details as {notePath:string;assetsDir:string};
+  const saved=(await call('save_visual_html',{filename:'parts whole.html',title:'Parts [whole]',htmlContent:html,verify:false})).details as {htmlPath:string;verification:{status:string}};
+  assert.equal(path.dirname(saved.htmlPath),first.assetsDir);
+  assert.equal(saved.verification.status,'skipped');
+  await call('append_lesson_node',{nodeId:'parts',nodeTitle:'Parts',explanationMarkdown:'A fraction compares parts with a whole.',visualFilename:'parts whole.html',visualTitle:'Parts [whole]'},'append-parts');
+  const link='[Parts \\[whole\\]](fractions.assets/parts%20whole.html)';
+  assert.ok((await fs.readFile(first.notePath,'utf8')).includes(link));
+  await call('record_review_attempt',{nodeId:'parts',kind:'immediate',isCorrect:true},'review-parts');
+  assert.ok((await fs.readFile(first.notePath,'utf8')).includes(link));
+  await fs.appendFile(first.notePath,'\nMy personal annotation.\n');
+  const beforeRepair=await fs.readFile(first.notePath,'utf8');
+  await fs.writeFile(first.notePath,beforeRepair.replace('A fraction compares parts with a whole.','Manual change to managed text.'));
+  await extension.commands.get('learn-repair')!.handler('',ctx as ExtensionCommandContext);
+  const repaired=await fs.readFile(first.notePath,'utf8');
+  assert.ok(repaired.includes(link));
+  assert.ok(repaired.includes('My personal annotation.'));
+  const otherCtx={...ctx,sessionManager:SessionManager.inMemory(root)};
+  await assert.rejects(call('save_visual_html',{filename:'other.html',title:'Other',htmlContent:html,verify:false},'other',otherCtx),/active|init_learning_session/i);
+  await extension.commands.get('md-log')!.handler('New topic',ctx as ExtensionCommandContext);
+  await assert.rejects(call('append_lesson_node',{nodeTitle:'Wrong note',explanationMarkdown:'Missing',visualFilename:'parts whole.html'},'wrong-note'),/missing/i);
+  const next=(await call('save_visual_html',{filename:'next.html',title:'Next',htmlContent:html,verify:false})).details as {htmlPath:string};
+  assert.notEqual(path.dirname(next.htmlPath),first.assetsDir);
+  await assert.rejects(call('save_visual_html',{filename:'cancelled.html',title:'Cancel',htmlContent:html,verify:false},'cancelled',ctx,AbortSignal.abort()),/abort/i);
+  await assert.rejects(fs.stat(path.join(path.dirname(next.htmlPath),'cancelled.html')),{code:'ENOENT'});
+});
+
+
+test('HTML save reports unavailable verification and rejects unsafe asset paths', async t => {
+  const {root,call}=await setup(t);
+  const active=(await call('init_learning_session',{topic:'Visual safety',goal:'Preserve files'})).details as {assetsDir:string};
+  const html='<!doctype html><html><head></head><body>Safe</body></html>';
+  const oldBrowser=process.env.PI_LEARN_BROWSER_PATH;
+  process.env.PI_LEARN_BROWSER_PATH=path.join(root,'missing-browser');
+  try {
+    const saved=(await call('save_visual_html',{filename:'saved.html',title:'Saved',htmlContent:html})).details as {htmlPath:string;status:string;verification:{status:string}};
+    assert.equal(saved.status,'saved');
+    assert.equal(saved.verification.status,'unavailable');
+    assert.match(await fs.readFile(saved.htmlPath,'utf8'),/Safe/);
+  } finally {
+    if(oldBrowser===undefined)delete process.env.PI_LEARN_BROWSER_PATH;else process.env.PI_LEARN_BROWSER_PATH=oldBrowser;
+  }
+  await assert.rejects(call('save_visual_html',{filename:'../escape.html',title:'Escape',htmlContent:html,verify:false}),/filename/i);
+  if(process.platform!=='win32') {
+    const outside=path.join(root,'outside.html');
+    await fs.writeFile(outside,'Keep this');
+    await fs.symlink(outside,path.join(active.assetsDir,'link.html'));
+    await assert.rejects(call('save_visual_html',{filename:'link.html',title:'Link',htmlContent:html,verify:false}),/symlink/i);
+    await assert.rejects(call('append_lesson_node',{nodeTitle:'Link',explanationMarkdown:'Unsafe',visualFilename:'link.html'}),/symlink/i);
+    assert.equal(await fs.readFile(outside,'utf8'),'Keep this');
+  }
+});

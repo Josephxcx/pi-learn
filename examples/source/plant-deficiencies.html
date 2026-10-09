@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en"><head><style>
+body{--pi-paper:#f7f8f0;--pi-ink:#203829;--pi-muted:#627464;--pi-text-muted:#627464}
+.plant-header{display:flex;justify-content:space-between;align-items:baseline;gap:16px;border-bottom:1px solid #ccd5c6;padding-bottom:18px;margin-bottom:36px}.plant-header p{margin:0;color:#627464;font-size:14px}.plant-intro{max-width:760px}.plant-intro h1{font-family:Palatino,'Palatino Linotype','Book Antiqua',Georgia,serif;font-weight:500;font-size:clamp(40px,5.6vw,68px);letter-spacing:-.035em;line-height:1.12;max-width:680px}.plant-intro>p{font-size:18px;max-width:660px}
+.plant-plate{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(0,1fr);gap:clamp(24px,4vw,56px);align-items:center;margin:30px 0 44px}.plant-specimen{margin:0;min-width:0}.plant-specimen svg{display:block;width:100%;height:auto;max-height:750px}.plant-specimen figcaption{font-size:13px;color:#627464;line-height:1.65;max-width:480px;padding:0 18px}.plant-specimen [data-tissue]{transition:opacity .2s}.plant-specimen [data-tissue][data-active=false]{opacity:.52}.plant-specimen [data-tissue][data-active=true]{opacity:1}.plant-context{padding:24px 0;border-top:2px solid #61805b}.plant-context h2{font-family:Palatino,'Palatino Linotype','Book Antiqua',Georgia,serif;font-size:34px;line-height:1.2;margin:0 0 12px}.plant-context>p{max-width:48ch}.plant-controls{display:flex;flex-wrap:wrap;gap:8px;margin:24px 0}.plant-controls button{background:transparent;color:#203829;border:1px solid #abbba4;padding:10px 14px;font-size:14px;border-radius:24px}.plant-controls button[aria-pressed=true]{background:#203829;border-color:#203829;color:#f7f8f0}.plant-focus{background:#eaf0e1;padding:22px;border-left:3px solid #54774a;min-height:225px}.plant-focus h3{font:600 22px system-ui,sans-serif;margin:0 0 12px}.plant-focus p{margin:0}.plant-note{color:#627464;font-size:14px;margin-top:18px}.plant-comparison{border-top:1px solid #ccd5c6;padding-top:20px}.plant-comparison h2{font-family:Palatino,'Palatino Linotype','Book Antiqua',Georgia,serif;font-weight:500}.plant-comparison table{font-size:15px}.plant-comparison caption{text-align:left;padding-bottom:14px}.plant-comparison th{background:#eaf0e1}
+@media(max-width:680px){.plant-header{flex-wrap:wrap;margin-bottom:26px}.plant-header p{font-size:13px}.plant-plate{grid-template-columns:1fr;gap:20px}.plant-intro h1{font-size:42px}.plant-specimen svg{max-height:none}.plant-context{padding-top:20px}.plant-focus{min-height:0}.plant-specimen figcaption{padding:0}.plant-comparison th,.plant-comparison td{padding:10px}}
+@media(prefers-reduced-motion:reduce){.plant-specimen [data-tissue]{transition:none}}
+</style></head><body><main>
+<header class="plant-header"><div class="pi-brand"><span>π</span> Pi-learn</div><p>Plant nutrition / Nutrient mobility</p></header>
+<section class="plant-intro"><h1>Read the plant,<br>starting with leaf age.</h1><p>Where a symptom appears helps explain which nutrients the plant can move—and which it cannot readily redistribute.</p></section>
+<section class="plant-plate" aria-label="Explore nutrient mobility by tissue age">
+<figure class="plant-specimen"><!-- plant-illustration --><figcaption>Illustrative broadleaf plant. The lower-leaf colour draws attention to older tissue; it does not establish a nutrient diagnosis.</figcaption></figure>
+<div class="plant-context"><h2>Different tissue.<br>Different clues.</h2><p>Select a part of the plant to connect its age with nutrient movement.</p>
+<div class="plant-controls" role="group" aria-label="Choose plant tissue"><button type="button" data-plant-region="tip" aria-pressed="false">Growing tip</button><button type="button" data-plant-region="young" aria-pressed="false">Young leaves</button><button type="button" data-plant-region="older" aria-pressed="true">Older leaves</button></div>
+<div class="plant-focus" data-plant-explanation aria-live="polite" aria-atomic="true"><h3>Older leaves can supply new growth.</h3><p>Mobile nutrients such as nitrogen and magnesium can be redistributed from older tissue. When supply is limited, deficiency symptoms commonly appear in older leaves first.</p></div>
+<p class="plant-note">Use location as a clue. Crop species, root health, disease, and growing conditions can produce overlapping patterns.</p></div>
+</section>
+<section class="plant-comparison"><h2>Compare the starting point.</h2><div class="pi-table-scroll"><table><caption class="pi-caption">Typical patterns. Confirm with crop context and appropriate soil or tissue testing.</caption><thead><tr><th scope="col">Nutrient</th><th scope="col">Common starting location</th><th scope="col">Typical clue</th></tr></thead><tbody><tr><th scope="row">Nitrogen</th><td>Older leaves</td><td>General yellowing</td></tr><tr><th scope="row">Magnesium</th><td>Older leaves</td><td>Yellowing between veins</td></tr><tr><th scope="row">Iron</th><td>Young leaves</td><td>Yellowing between veins</td></tr><tr><th scope="row">Calcium</th><td>Growing points and developing tissue</td><td>Distorted growth or tissue injury</td></tr></tbody></table></div></section>
+<section class="pi-steps" data-pi-steps aria-label="Diagnostic reasoning steps">
+<article class="pi-step" data-pi-step><h2>Locate the first symptoms.</h2><p>Check whether older leaves, younger leaves, or the growing point are affected first.</p></article>
+<article class="pi-step" data-pi-step hidden><h2>Connect location with mobility.</h2><p>Older-leaf symptoms suggest considering mobile nutrients. Young-tissue symptoms suggest considering less mobile nutrients, along with other possible causes.</p></article>
+<article class="pi-step" data-pi-step hidden><h2>Confirm the pattern.</h2><p>Combine the observation with crop species, root health, soil conditions, and appropriate testing. Similar symptoms can have different causes.</p></article>
+<div class="pi-controls"><button type="button" class="pi-secondary" data-pi-prev>Back</button><button type="button" data-pi-next>Next</button><span role="status" data-pi-step-status></span></div></section>
+<form class="pi-quiz" data-pi-quiz><fieldset><legend>Which observation is consistent with magnesium deficiency?</legend>
+<label class="pi-option"><input type="radio" name="magnesium" data-pi-answer="false" data-pi-explanation="Young-leaf interveinal yellowing more often suggests iron deficiency, among other possibilities.">Yellowing between veins on young leaves only</label>
+<label class="pi-option"><input type="radio" name="magnesium" data-pi-answer="true" data-pi-explanation="Magnesium is mobile, so older leaves commonly show symptoms first.">Yellowing between veins on older leaves</label>
+<label class="pi-option"><input type="radio" name="magnesium" data-pi-answer="false" data-pi-explanation="Visual patterns need supporting evidence.">Any leaf symptom proves magnesium deficiency</label>
+<div class="pi-controls"><button type="submit">Check answer</button><button type="button" class="pi-secondary" data-pi-show-hint>Hint</button><button type="button" class="pi-secondary" data-pi-retry>Retry</button></div><p class="pi-feedback" role="status" data-pi-feedback hidden></p><p data-pi-hint hidden>Consider nutrient mobility and leaf age together.</p></fieldset></form>
+<script>
+(() => {
+  const explanations={
+    older:['Older leaves can supply new growth.','Mobile nutrients such as nitrogen and magnesium can be redistributed from older tissue. When supply is limited, deficiency symptoms commonly appear in older leaves first.'],
+    young:['New leaves depend on incoming supply.','Iron is relatively immobile within the plant. Deficiency therefore commonly appears as yellowing between veins in young leaves, even while older leaves remain greener.'],
+    tip:['Growing tissue needs a steady supply.','Calcium is poorly redistributed from mature tissue. Shortages can affect growing points and developing tissue, causing distorted growth or tissue injury.']
+  };
+  const panel=document.querySelector('[data-plant-explanation]');
+  document.querySelectorAll('[data-plant-region]').forEach(button=>{
+    button.addEventListener('click',()=>{
+      const region=button.dataset.plantRegion;
+      document.querySelectorAll('[data-plant-region]').forEach(control=>control.setAttribute('aria-pressed',String(control===button)));
+      document.querySelectorAll('[data-tissue]').forEach(tissue=>tissue.setAttribute('data-active',String(tissue.dataset.tissue===region)));
+      panel.querySelector('h3').textContent=explanations[region][0];
+      panel.querySelector('p').textContent=explanations[region][1];
+    });
+  });
+})();
+</script>
+</main></body></html>

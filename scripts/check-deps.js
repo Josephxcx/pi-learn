@@ -1,7 +1,7 @@
 // Diagnostics only: installing pi-learn never changes global Pi settings or packages.
 import { createRequire } from 'node:module';
 const require = createRequire(import.meta.url);
-for (const name of ['@earendil-works/pi-coding-agent', '@juicesharp/rpiv-ask-user-question']) {
+for (const name of ['@earendil-works/pi-coding-agent']) {
   try {
     require.resolve(name);
     console.log(`${name}: available locally`);

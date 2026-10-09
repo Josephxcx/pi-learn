@@ -26,14 +26,17 @@
     "typecheck": "tsc --noEmit",
     "check": "npm run typecheck && npm test",
     "check:deps": "node scripts/check-deps.js",
-    "check:package": "npm pack --dry-run"
+    "check:package": "npm pack --dry-run",
+    "visual:examples": "node scripts/build-visual-examples.mts",
+    "visual:verify": "node scripts/build-visual-examples.mts --verify"
   },
   "pi": {
     "extensions": [
       "./extensions/md-log.ts"
     ],
     "skills": [
-      "./skills/pi-learn"
+      "./skills/pi-learn",
+      "./skills/frontend-design"
     ]
   },
   "peerDependencies": {
@@ -52,7 +55,9 @@
     "docs/technical-guide.md",
     "scripts/check-deps.js",
     "README.md",
-    "LICENSE"
+    "LICENSE",
+    "assets/",
+    "scripts/build-visual-examples.mts"
   ],
   "peerDependenciesMeta": {
     "@earendil-works/pi-coding-agent": {
@@ -62,11 +67,15 @@
   "dependencies": {
     "@resvg/resvg-js": "^2.6.2",
     "saxes": "^6.0.0",
-    "typebox": "1.3.27"
+    "typebox": "1.3.27",
+    "katex": "^0.19.0"
   },
   "devDependencies": {
     "@earendil-works/pi-coding-agent": "1.1.0",
     "@types/node": "^22.19.0",
     "typescript": "~5.9.3"
+  },
+  "optionalDependencies": {
+    "playwright": "^1.64.0"
   }
 }

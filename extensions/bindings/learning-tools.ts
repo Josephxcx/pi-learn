@@ -33,7 +33,7 @@ export function registerLearningTools(pi: ExtensionAPI): void {
     name:'append_lesson_node',label:'Save Lesson Step',
     description:'Save one concept, optional concise revision summary, sources and a diagram. Reuse nodeId for retries. A supplied activeRecallQuiz records one immediate attempt.',
     parameters:Type.Object({
-      nodeTitle:text(undefined,500),explanationMarkdown:text(),nodeId:optionalText(),diagramFilename:optionalText(),
+      nodeTitle:text(undefined,500),explanationMarkdown:text(),nodeId:optionalText(),diagramFilename:optionalText(),visualFilename:optionalText(),visualTitle:optionalText(),
       revisionSummary:optionalText(),mnemonic:optionalText(),sources:Type.Optional(Type.Array(text(),{maxItems:50})),
       activeRecallQuiz:Type.Optional(Type.Object({question:text(),chosenAnswer:text(),isCorrect:Type.Boolean(),keyTakeaway:text()},{additionalProperties:false})),
     },{additionalProperties:false}),
@@ -53,7 +53,7 @@ export function registerLearningTools(pi: ExtensionAPI): void {
   },async(_params,ctx,_id,signal)=>{const {store,sessionId}=learningContext(ctx,signal);return {reviews:await store.dueReviews(sessionId)};});
   registerTool(pi, {
     name:'save_diagram_svg',label:'Save Learning Diagram',
-    description:'Save a static SVG and render a local PNG preview. Requires an active note. Inspect the preview before embedding; rendering alone does not verify a diagram.',
+    description:'Read get_visual_design_guidance before authoring. Save a static SVG and render a local PNG preview. Requires an active note. Inspect the preview before embedding; rendering alone does not verify a diagram.',
     parameters:Type.Object({filename:text(undefined,124),svgContent:text(undefined,1_000_000)},{additionalProperties:false}),
   },async(params,ctx,_id,signal)=>{
     const {store,sessionId}=learningContext(ctx,signal);

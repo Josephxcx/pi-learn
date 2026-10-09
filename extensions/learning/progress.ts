@@ -15,6 +15,8 @@ export interface LessonInput {
   nodeTitle: string;
   explanationMarkdown: string;
   diagramFilename?: string;
+  visualFilename?: string;
+  visualTitle?: string;
   activeRecallQuiz?: RecallQuiz;
   nodeId?: string;
   revisionSummary?: string;
@@ -111,7 +113,7 @@ export function validateLesson(value: unknown): asserts value is LessonInput {
   const lesson = record(value, 'lesson');
   stringValue(lesson.nodeTitle, 'node title');
   stringValue(lesson.explanationMarkdown, 'explanation');
-  for (const key of ['nodeId', 'diagramFilename', 'revisionSummary', 'mnemonic']) optionalString(lesson[key], key);
+  for (const key of ['nodeId', 'diagramFilename', 'visualFilename', 'visualTitle', 'revisionSummary', 'mnemonic']) optionalString(lesson[key], key);
   if (lesson.nodeId !== undefined) stringValue(lesson.nodeId, 'node ID');
   if (lesson.sources !== undefined) {
     if (!Array.isArray(lesson.sources)) throw new Error('Invalid sources: expected nonempty strings.');

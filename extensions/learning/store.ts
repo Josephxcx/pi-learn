@@ -1,4 +1,5 @@
 import fs from 'node:fs/promises';
+import { companionLink, validateVisualFilename } from '../visuals/companions.ts';
 import path from 'node:path';
 import os from 'node:os';
 import { randomUUID } from 'node:crypto';
@@ -74,6 +75,7 @@ function renderManaged(progress: LearningProgress, notePath: string): string {
       const assetLink = [path.basename(assetsPath(notePath)), node.diagramFilename].map(encodeURIComponent).join('/');
       lines.push(`![Diagram for ${markdownTitle(node.nodeTitle).replace(/[\[\]]/g, '')}](./${assetLink})`, '');
     }
+    if (node.visualFilename) lines.push(companionLink(notePath, path.join(assetsPath(notePath), node.visualFilename), node.visualTitle || node.nodeTitle), '');
     if (node.sources?.length) lines.push('**Sources**', '', ...node.sources.map(source => `- ${source}`), '');
     lines.push(`*Progress: ${node.retention}; next review: ${node.nextReviewAt.slice(0, 10)}. Node ID: \`${node.nodeId.replace(/`/g, '')}\`.*`, '');
   }
@@ -267,6 +269,7 @@ export class LearningStore {
   }
   async appendNode(sessionId: string, input: LessonInput, operationId?: string): Promise<LearningState> {
     validateLesson(input);
+    if (input.visualFilename !== undefined) validateVisualFilename(input.visualFilename);
     if (input.diagramFilename && (path.basename(input.diagramFilename) !== input.diagramFilename || /[\\/\[\]\r\n]/.test(input.diagramFilename) || !/\.(svg|png|webp|jpe?g)$/i.test(input.diagramFilename))) throw new Error('Diagram filename must be a single asset filename with an image extension.');
     return this.mutate(sessionId, operationId, async (progress, pointer) => {
       const nodeId = input.nodeId ?? operationId ?? randomUUID();
@@ -278,6 +281,16 @@ export class LearningStore {
           if (!(await fs.stat(diagramPath)).isFile()) throw new Error('Diagram is not a file.');
         } catch (error) {
           if (isMissing(error)) throw new Error(`Diagram is missing from this note: ${input.diagramFilename}. Save it for the active note before embedding.`);
+          throw error;
+        }
+      }
+      if (input.visualFilename) {
+        const visualPath = path.join(assetsPath(pointer.notePath), input.visualFilename);
+        await assertSafePath(visualPath);
+        try {
+          if (!(await fs.stat(visualPath)).isFile()) throw new Error('Visual companion is not a file.');
+        } catch (error) {
+          if (isMissing(error)) throw new Error(`Visual companion is missing from this note: ${input.visualFilename}. Save it for the active note before linking.`);
           throw error;
         }
       }

@@ -55,6 +55,12 @@ If you have several vaults or want a different folder, see [choose your notes fo
 
 Use `/md-view` to open your current note. Add your own thoughts in its **Your notes** section; pi-learn manages the lesson sections. Keep the whole lesson folder together when moving or backing up notes, so its pictures and saved progress stay with it.
 
+## Interactive visual companions
+
+Ask Pi to explain a concept with an interactive visual or practice quiz. It can create a standalone HTML page linked from your lesson, with diagrams, reveal controls, and MCQs. Visual explanations favour polished, topic-specific illustrations using the bundled frontend-design skill. Mermaid remains available for simple roadmaps and flows.
+
+Open companions in a browser, or use Obsidian's HTML Viewer plugin with scripts enabled for your trusted lessons. Practice inside a page does not update your saved Pi review status. See [visual setup and verification](docs/technical-guide.md#html-visual-companions).
+
 ## See an example
 
 The [sample lesson on Fundamental Rights and Directive Principles](examples/lessons/fundamental-rights-and-directive-principles.md) shows the teaching style: a clear diagram, comparison tables, a memory aid and practice questions.

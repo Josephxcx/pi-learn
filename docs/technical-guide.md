@@ -110,7 +110,7 @@ Scores are **uncalibrated study-order heuristics**, not probabilities, predicted
 
 The [teaching contract](../skills/pi-learn/SKILL.md) guides the tutor to use understandable explanations, neutral retrieval questions, concise revision summaries and source references. It allows a useful general lesson when exam evidence is missing. AI output still needs factual judgment; the extension cannot guarantee every explanation or answer key.
 
-Visuals use a restrained textbook style, meaningful connections, legible labels and native Markdown comparison tables. Mnemonics are optional, with an explicit mapping and limitation. The complete [sample lesson](../examples/lessons/fundamental-rights-and-directive-principles.md) includes a diagram, comparison tables, memory cue, practice and collapsed answer callouts.
+Visuals follow the bundled frontend-design skill, adapted for teaching: topic-specific composition, meaningful connections, legible labels and native Markdown comparison tables. Mnemonics are optional, with an explicit mapping and limitation. The complete [sample lesson](../examples/lessons/fundamental-rights-and-directive-principles.md) includes a diagram, comparison tables, memory cue, practice and collapsed answer callouts.
 
 ![Sample constitutional diagram](../examples/lessons/assets/rights-and-directives.png)
 
@@ -136,6 +136,7 @@ Use stable `nodeId` and `attemptId` values when retrying. An `activeRecallQuiz` 
 
 ```sh
 npm ci
+npx playwright install --with-deps chromium
 npm run check
 npm run check:package
 ```
@@ -143,3 +144,16 @@ npm run check:package
 `check` runs strict TypeScript and Node's test runner. Tests use temporary vaults and include the real Pi extension loader, session isolation, storage recovery, rendering safety, syllabus parsers and evidence scoring. CI is configured for Node 22 and 24 on Linux, macOS and Windows, against current and legacy Pi bindings; a local Linux pass does not establish that remote matrix has run.
 
 The architecture separates `extensions/bindings` (typed Pi tools), `extensions/learning` (local files, progress and diagrams), and `extensions/prioritization` (source validation, parsing, scoring and presentation). `extensions/md-log.ts` registers commands and connects those services. No hosted backend, remote account or database server is needed.
+
+
+## HTML visual companions
+
+The bundled `frontend-design` skill and `get_visual_design_guidance` tool provide design guidance for all lesson visuals. `get_visual_components` supplies the HTML component contracts. `save_visual_html` saves self-contained pages in the active note's assets folder, using the same session isolation, file locking and protected writes as the learning store. `append_lesson_node` accepts `visualFilename` and `visualTitle`; these survive later reviews and managed-note repairs.
+
+Pages include shared styles and controls for step reveals, sliders and single/multiple-answer practice. Optional `includeMath` embeds KaTeX and its fonts. There are no required CDN resources or paid image APIs. HTML practice is separate from Pi's retrieval history; record only responses actually received through the tutor.
+
+Open the page in a browser, or install Obsidian's HTML Viewer community plugin and enable scripts for trusted companions. Actual HTML Viewer compatibility still needs a manual check in Obsidian; browser tests do not reproduce its sandbox.
+
+Browser verification uses optional Playwright/Chromium. Install the browser with `npx playwright install chromium`, or set `PI_LEARN_BROWSER_PATH` to an existing Chromium executable. Saving still works if the browser is unavailable, returning `verification.status: unavailable`; `verify: false` explicitly skips checks. Neither state means verified. Checks run offline at 1200px and 400px, inspect script errors, external dependencies and overflow, exercise standard controls, and return temporary screenshots. Inspect those screenshots and check factual accuracy separately. Custom interactions need their own tests.
+
+Developer examples: `npm run visual:examples` rebuilds the three standalone examples; `npm run visual:verify` also checks them in Chromium. The package includes runtime styles and scripts under `assets/visual-companion`, and the upstream frontend-design skill with its Apache-2.0 license and provenance under `skills/frontend-design`.

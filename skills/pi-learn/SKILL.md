@@ -67,6 +67,7 @@ Use `append_lesson_node` with:
 - `mnemonic`: optional exact mapping and limitation, written as text/Markdown.
 - `sources`: source URLs plus useful article/page/paper/version references as strings. Identify unverified or unavailable evidence rather than implying it was checked.
 - `diagramFilename`: only a filename returned by a successful `save_diagram_svg` call for this active note.
+- `visualFilename` and optional `visualTitle`: link an HTML companion saved for this active note. The link is retained in saved progress and rebuilt with the note.
 - `activeRecallQuiz`: only after a real response, containing `question`, `chosenAnswer`, `isCorrect`, and `keyTakeaway`.
 
 **Record each response exactly once.** Appending with `activeRecallQuiz` already records an immediate attempt. Do not also call `record_review_attempt` for that response. Alternatively, append without a quiz and then record the response with `record_review_attempt({nodeId, question?, chosenAnswer?, isCorrect, keyTakeaway?, kind: "immediate", attemptId?})`. Additional retries by the learner are distinct attempts; retried tool calls must keep the same operation identity or explicit `attemptId`.
@@ -83,7 +84,11 @@ Summarize a session with the distinction learned, the main remaining difficulty,
 
 ## Visual and source standards
 
-Use restrained ink, teal, and ochre on a light ground, readable labels, generous space, and one teaching purpose per figure. No neon panels, gradients, decorative emoji, crowded badges, or repeated rounded cards. Native tables remain selectable and easy to revise; do not rasterize them into pictures.
+Before authoring the first visual in a session, call `get_visual_design_guidance({})` to read the bundled frontend-design skill and [teaching adaptation](references/visual-design.md). Apply it to lesson layouts, art, diagrams, Mermaid roadmaps, and quiz presentation. Reuse the guidance throughout the session. Start with bold editorial styling and adapt palette, composition, and representation to the subject. Prioritize factual accuracy, readable contrast, meaningful connections, generous space, and one teaching purpose per figure. Native tables remain selectable and easy to revise; do not rasterize them into pictures.
+
+For visual explanations, prefer a polished standalone HTML companion with a topic-specific illustration or diagram, linked from the Markdown lesson. A static illustrated page is useful even without interactive controls. Keep plain prose or a Markdown table for concepts that need no figure; use Mermaid for compact roadmaps and flows rather than as the default illustrated explanation. Read `get_visual_components({})`, author the document, and call `save_visual_html({filename, htmlContent, title, includeMath?, verify?})`. Math support bundles KaTeX offline. Inspect returned screenshots for aesthetic quality as well as readability: the focal illustration must be recognizable, labels must explain real relationships, and the composition must suit this subject. Revise crude geometry, generic repeated cards, weak hierarchy, or low contrast before delivery. Check content independently; unavailable browser checks do not count as verified. Link using `append_lesson_node` with `visualFilename` and optional `visualTitle`. See [HTML component guidance](references/html-visuals.md).
+
+HTML MCQs are local practice; they do not record attempts or change review status in Pi. Continue asking neutral questions in chat and record only actual learner responses. Respect a learner's request to skip retrieval or move on.
 
 Save a schematic with `save_diagram_svg({filename, svgContent})`. Use static shapes/text and SVG presentation attributes, not scripts, external resources, or `style` attributes. A PNG conversion is not a visual check. When an image-viewing tool is available, inspect the returned preview for clipped text, incorrect connections, and legibility. State when visual inspection was unavailable; do not claim verification from saving alone. Programmatic SVGs are informational diagrams, not generated illustrations. Add a caption or nearby text explaining the relation for readers who cannot see the figure.
 

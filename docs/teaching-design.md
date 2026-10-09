@@ -59,13 +59,15 @@ A revision entry usually needs a definition, a boundary or contrast, a common ex
 
 Storage errors should be visible. The tutor should not say a note was saved, an image was inspected, or Obsidian opened unless that action succeeded. A legacy note should be recovered explicitly; existing content is not a blank template to replace. If a managed block was manually edited, `/learn-repair` explicitly backs up the note and rebuilds that block from saved progress. Use it when the learner chooses to restore the generated content; keep personal annotations outside managed blocks.
 
-## Illustrated textbook presentation
+## Topic-specific visual explanations
 
-Use a quiet page with a clear heading hierarchy and ample space. Ink (`#24343B`) carries the text, teal (`#236B68`) identifies one relation, and ochre (`#966A20`) identifies a contrasting relation. Colour supplements labels; it does not carry the only meaning. Native Markdown tables make comparisons selectable, editable, and readable in ordinary Markdown and Obsidian.
+Use the bundled frontend-design skill and [visual teaching guidance](../skills/pi-learn/references/visual-design.md) for all lesson visuals. The goal is an aesthetically deliberate explanation: a strong focal illustration, readable labels, meaningful connections, and a composition suited to the subject. Start from the learner's preferred bold editorial direction and adapt it; a fixed palette or repeated card layout is not the design.
 
-A diagram must explain a relationship the prose or table cannot show as efficiently. Suitable examples include a dependency, a feedback loop, a sequence, or a constitutional provision connected to its practical consequence. Keep the diagram focused. Use readable labels, ordinary arrows, and a nearby text equivalent. Avoid gradients, neon backgrounds, decorative emoji, excessive badges, and card grids that fragment the argument.
+Prefer standalone HTML with carefully authored inline SVG for rich visual explanations, including static illustrated pages. Add interaction when it helps expose a mechanism, compare states, or practise a concept. Keep Mermaid for compact roadmaps and simple flows, standalone SVG for figures embedded directly in notes, and native Markdown tables for editable comparisons.
 
-The sample's [SVG](../examples/lessons/assets/rights-and-directives.svg) is a schematic made from vector shapes and text. It uses presentation attributes compatible with the extension's static SVG validator. Its [PNG preview](../examples/lessons/assets/rights-and-directives.png) supports visual inspection. Rendering verifies that a file can be converted; inspection must separately check label size, clipping, spacing, and conceptual accuracy. A successful render alone must never be described as a visual review.
+Use colour alongside labels, generous space, and a nearby text explanation. Anatomy must be recognizable and connected; mathematical and process diagrams must preserve true relationships. Review screenshots at desktop and narrow widths for contrast, clipping, hierarchy, and visual polish, then revise weak compositions. Passing browser checks does not establish aesthetic or factual quality.
+
+The existing [rights-and-directives SVG](../examples/lessons/assets/rights-and-directives.svg) remains an example of a simple static schematic compatible with the SVG tool. It is not the mandatory style for future lessons. The [botanical companion](../examples/visuals/plant-deficiencies.html) demonstrates a richer, topic-specific illustrated explanation. Rendering alone must never be described as a visual review.
 
 ## Source and quality checks
 
