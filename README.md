@@ -267,3 +267,50 @@ Pi will immediately start Phase 1 diagnostic probing in your terminal, create yo
 
 ## 📄 License
 MIT License. Created for the Pi Agent Ecosystem. Inspired by the learning philosophy of Eero Alvar.
+
+## HTML visual companions
+
+Pi-learn can now save one rich HTML explanation per concept alongside its existing Markdown notes. The shared **bold editorial** visual system supplies typography, colours, responsive layouts, step controls, fraction experiments, and practice MCQs. The tutor can compose these components or create a custom topic-specific layout; the design does not impose one diagram on every subject.
+
+### Tutor workflow
+
+1. Call `get_visual_components` to read the authoring patterns.
+2. Call `save_visual_html` with `filename`, a complete `htmlContent` document, and `title`. Shared CSS and event-listener-based controls are embedded automatically. Set `includeMath: true` to bundle KaTeX and its fonts for offline equations; otherwise no math assets are added.
+3. Inspect the returned browser screenshots when available, and check lesson facts separately.
+4. Call `append_lesson_node` with optional `visualFilename` and `visualTitle`. The Markdown note receives a relative link to the companion; existing SVG embedding remains supported.
+
+HTML quizzes are local practice. They support single/multiple answers, submission feedback, per-choice explanations, hints, and retries. They **do not** advance the terminal tutor or save quiz results back to Pi. The existing `ask_user_question` recall gate remains in use.
+
+### View inside Obsidian
+
+Install and enable [HTML Viewer](https://github.com/jialinzhang24/obsidian-html-viewer) through **Settings → Community plugins**. Open the linked `.html` file in a tab beside the lesson note. Enable **Scripts ON** for trusted interactive lessons. The extension does not install or configure Obsidian plugins automatically. HTML files also open in a normal browser.
+
+The documents are self-contained and work offline. Use event listeners rather than inline `onclick`, which HTML Viewer strips. Do not rely on persistent `localStorage`, parent-window access, or external files/CDNs. Representative lessons still need a manual check in your Obsidian version; Chromium verification does not establish plugin compatibility.
+
+### Optional browser checks
+
+`save_visual_html` defaults to `verify: true`. With Playwright and a Chromium browser available, it checks 1200px and 400px layouts, blocks external resources, collects script errors, exercises standard component controls, and saves screenshots in a temporary directory. Results report `passed`, `failed`, `unavailable`, or `skipped` separately from file-save success. Custom interactions require their own checks, and rendering checks do not prove factual correctness.
+
+Playwright is an optional npm dependency. To install its browser manually:
+
+```bash
+npx playwright install chromium
+```
+
+Alternatively set `PI_LEARN_BROWSER_PATH` to your Chromium executable; common Linux Chromium paths are detected automatically. No browser is downloaded by the extension itself. Set `verify: false` to skip checks. HTML saving works when checks are unavailable.
+
+### Examples and development
+
+Open the included files in `examples/visuals/`: `fractions.html`, `nitrogen-cycle.html`, and `plant-deficiencies.html`. They demonstrate an interactive diagram, a transformation map, and a labelled structure with a comparison table.
+
+Development scripts use Node.js 22.18+ (native TypeScript stripping):
+
+```bash
+npm test
+npm run visual:examples
+npm run visual:verify
+```
+
+The browser tests require the optional Playwright dependency and a Chromium installation. Previews from `visual:verify` are written to the ignored `.visual-previews/` directory. See [HTML authoring guidance](skills/pi-learn/references/html-visuals.md) for the component contracts.
+
+KaTeX is MIT licensed; Playwright is Apache-2.0 licensed. Their installed packages include the upstream licence texts. The shared Pi-learn components use this repository's MIT licence. Lucide, Rough.js, D3, and Three.js are not required for this first implementation; add them only when a lesson needs capabilities beyond native SVG/JavaScript.

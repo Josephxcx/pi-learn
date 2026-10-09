@@ -20,7 +20,7 @@ This skill implements the high-retention 1-to-1 learning architecture. It elimin
 2. **Operate at the Frontier:** Never waste time on concepts the user already has down cold, nor dump material they lack prerequisites to understand.
 3. **Atomic Steps (No Rushing):** Advance strictly **one reasoning step at a time**. Do not dump multiple conceptual leaps in one turn.
 4. **Active Recall with Strict Neutrality:** Test understanding after every single step using `ask_user_question`. Never leak answers or hints with `(Recommended)` labels or priority badges during recall checks.
-5. **Visuals with Ground Truth:** Generate SVG diagrams for geometric/structural concepts, inspect them via visual tools, and embed verified assets into the notes.
+5. **Visuals with Ground Truth:** Generate topic-adapted HTML companions or SVG diagrams, inspect available previews, check factual correctness separately, and link or embed assets in notes.
 6. **Obsidian-Ready Artifacts:** Keep notes synchronized with LaTeX equations, Mermaid DAGs, and diagram embeds in dedicated exam directories.
 
 ---
@@ -63,7 +63,8 @@ For each node in the DAG sequentially:
      $$\text{Super Key} \supseteq \text{Candidate Key} \supseteq \text{Primary Key}$$
    - Highlight the single conceptual shift in this step.
 2. **Generate Visual Diagrams (When applicable):**
-   - For structural, relational, or procedural ideas, generate a clean SVG using `save_diagram_svg(filename, svgContent)`.
+   - For rich explanations, read `get_visual_components()` and use `save_visual_html(filename, htmlContent, title, includeMath?, verify?)`. Follow [HTML visual guidance](references/html-visuals.md): adapt the layout and diagram to the concept, use shared editorial styling, inspect returned previews, and correct reported failures. Browser checks do not prove factual correctness.
+   - For a simple static diagram, continue using `save_diagram_svg(filename, svgContent)`.
    - Diagram is saved directly into the active exam's assets folder (e.g. `MUDAL-System-Manager/assets/<filename>.svg`).
 3. **Active Recall Check (STRICT FIREWALL RULE):**
    - **MANDATORY:** Active recall questions generated via `ask_user_question` must **NEVER** contain `(Recommended)`, `[Recommended]`, or any priority anchors/badges (`Must Study`, `High Priority`, etc.) in option labels or question text.
@@ -73,7 +74,7 @@ For each node in the DAG sequentially:
 4. **Reinforce & Log:**
    - If correct: Validate why it's right and solidify the intuition.
    - If incorrect: Explain the misconception, clarify, and re-test before moving on.
-   - Call `append_lesson_node(nodeTitle, explanationMarkdown, diagramFilename, activeRecallQuiz)`.
+   - Call `append_lesson_node(nodeTitle, explanationMarkdown, diagramFilename?, activeRecallQuiz?, visualFilename?, visualTitle?)` with named arguments. HTML practice is optional and never replaces the terminal recall gate.
 5. **Advance:** Proceed to the next node in the DAG only after current comprehension is confirmed.
 
 ---

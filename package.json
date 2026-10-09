@@ -22,7 +22,10 @@
   "homepage": "https://github.com/Josephxcx/pi-learn#readme",
   "license": "MIT",
   "scripts": {
-    "postinstall": "node scripts/check-deps.js"
+    "postinstall": "node scripts/check-deps.js",
+    "test": "node --test tests/*.test.ts",
+    "visual:examples": "node scripts/build-visual-examples.mts",
+    "visual:verify": "node scripts/build-visual-examples.mts --verify"
   },
   "pi": {
     "extensions": [
@@ -36,5 +39,11 @@
     "@earendil-works/pi-coding-agent": "*",
     "@juicesharp/rpiv-ask-user-question": "*",
     "typebox": "*"
+  },
+  "dependencies": {
+    "katex": "^0.19.0"
+  },
+  "optionalDependencies": {
+    "playwright": "^1.64.0"
   }
 }

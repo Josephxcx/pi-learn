@@ -3,6 +3,9 @@ import { Type } from "typebox";
 import fs from "node:fs";
 import path from "node:path";
 import os from "node:os";
+import { fileURLToPath } from "node:url";
+import { saveCompanion, companionLink, validateVisualFilename } from "./visuals/companions.ts";
+import { verifyCompanion } from "./visuals/verify.ts";
 import { execSync } from "node:child_process";
 import { resolveActiveExamTaxonomy, parseMudalPYQs } from "./prioritization/prioritization-parser.ts";
 import { prioritizeTaxonomy } from "./prioritization/prioritization-engine.ts";
@@ -176,6 +179,17 @@ export default function mdLogExtension(pi: ExtensionAPI) {
       const targetFile = path.join(targetDir, filename);
 
       activeNotePath = targetFile;
+      activeAssetsDir = resolveExamAssetsDir(vaultPath, targetFile);
+      activeSessionState = {
+        activeSessionId: `sess-${Date.now()}`,
+        examId: subFolder.split(path.sep)[0] || "General",
+        topic: topicStr,
+        notePath: targetFile,
+        assetsDir: activeAssetsDir,
+        startedAt: new Date().toISOString(),
+        lastAccessedAt: new Date().toISOString(),
+      };
+      saveSessionState(activeSessionState);
       if (!fs.existsSync(targetFile)) {
         const header = [
           "---",
@@ -409,6 +423,8 @@ export default function mdLogExtension(pi: ExtensionAPI) {
       nodeTitle: Type.String({ description: "Title of the node / step." }),
       explanationMarkdown: Type.String({ description: "The conceptual explanation with LaTeX." }),
       diagramFilename: Type.Optional(Type.String({ description: "Filename of SVG diagram in assets/." })),
+      visualFilename: Type.Optional(Type.String({ description: "Saved HTML companion filename in the active assets directory." })),
+      visualTitle: Type.Optional(Type.String({ description: "Link label for the HTML visual companion." })),
       activeRecallQuiz: Type.Optional(
         Type.Object({
           question: Type.String(),
@@ -444,6 +460,19 @@ export default function mdLogExtension(pi: ExtensionAPI) {
         );
       }
 
+      if (params.visualFilename) {
+        try {
+          validateVisualFilename(params.visualFilename);
+          const assetsDir = activeAssetsDir || resolveExamAssetsDir(getObsidianVaultPath(), activeNotePath);
+          const htmlPath = path.join(assetsDir, params.visualFilename);
+          const stat = fs.lstatSync(htmlPath);
+          if (!stat.isFile() || stat.isSymbolicLink()) throw new Error("Companion must be a saved HTML file in the active assets directory.");
+          sections.push("#### Interactive visual companion", companionLink(activeNotePath, htmlPath, params.visualTitle || "Explore this concept"), "");
+        } catch (error) {
+          return { isError: true, content: [{ type: "text", text: JSON.stringify({ status: "error", message: error instanceof Error ? error.message : String(error) }) }] };
+        }
+      }
+
       if (params.activeRecallQuiz) {
         const q = params.activeRecallQuiz;
         const icon = q.isCorrect ? "✅" : "💡";
@@ -471,6 +500,50 @@ export default function mdLogExtension(pi: ExtensionAPI) {
           },
         ],
       };
+    },
+  });
+
+  pi.registerTool({
+    name: "get_visual_components",
+    label: "HTML Visual Components",
+    description: "Read the adaptive editorial visual system and HTML patterns for diagrams, steps, sliders, and practice MCQs. Shared styles/scripts are injected by save_visual_html.",
+    parameters: Type.Object({}),
+    async execute() {
+      const guidePath = fileURLToPath(new URL("../skills/pi-learn/references/html-visuals.md", import.meta.url));
+      return { content: [{ type: "text", text: fs.readFileSync(guidePath, "utf-8") }] };
+    },
+  });
+
+  pi.registerTool({
+    name: "save_visual_html",
+    label: "Save HTML Visual Companion",
+    description: "Save a self-contained HTML lesson companion with shared editorial styles and practice controls. Optionally verify it offline at desktop/narrow widths. Browser checks do not establish factual correctness or Obsidian compatibility.",
+    parameters: Type.Object({
+      filename: Type.String({ description: "Plain filename ending in .html, without directory paths." }),
+      htmlContent: Type.String({ description: "Complete HTML document. Use get_visual_components for optional shared classes and controls; custom topic layouts are supported." }),
+      title: Type.String({ description: "Human-readable visual companion title." }),
+      includeMath: Type.Optional(Type.Boolean({ description: "Bundle offline KaTeX for data-pi-math elements. Default false." })),
+      verify: Type.Optional(Type.Boolean({ description: "Run optional local browser checks and save temporary screenshots. Default true." })),
+    }),
+    async execute(_id, params) {
+      try {
+        if (!activeNotePath) {
+          const reloaded = loadSessionState();
+          if (reloaded) { activeNotePath = reloaded.notePath; activeAssetsDir = reloaded.assetsDir; }
+        }
+        const vaultPath = getObsidianVaultPath();
+        const assetsDir = activeAssetsDir || (activeNotePath ? resolveExamAssetsDir(vaultPath, activeNotePath) : path.join(vaultPath, "assets"));
+        const saved = saveCompanion({ assetsDir, filename: params.filename, htmlContent: params.htmlContent, title: params.title, includeMath: params.includeMath });
+        const previewDir = fs.mkdtempSync(path.join(os.tmpdir(), "pi-visual-preview-"));
+        const verification = params.verify === false
+          ? { status: "skipped", screenshots: [], errors: [], checks: [] }
+          : await verifyCompanion(saved.htmlPath, previewDir);
+        return { content: [{ type: "text", text: JSON.stringify({ status: "saved", ...saved, assetsDir, verification,
+          noteLink: activeNotePath ? companionLink(activeNotePath, saved.htmlPath, params.title) : null,
+          message: "HTML saved. Inspect screenshot paths when available and fix reported failures before describing the companion as checked. Log with append_lesson_node(visualFilename, visualTitle)." }) }] };
+      } catch (error) {
+        return { isError: true, content: [{ type: "text", text: JSON.stringify({ status: "error", message: error instanceof Error ? error.message : String(error) }) }] };
+      }
     },
   });
 
