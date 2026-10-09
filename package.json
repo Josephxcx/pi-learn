@@ -1,7 +1,7 @@
 {
   "name": "pi-learn",
   "version": "1.0.0",
-  "description": "Interactive 1-to-1 learning tutor for Pi: 4-phase syllabus prioritization, diagnostic quizzes, Mermaid roadmaps, LaTeX math, and live Obsidian notes.",
+  "description": "Personal exam tutor for Pi with resumable Obsidian notes, retrieval practice and evidence-aware syllabus priorities.",
   "main": "extensions/md-log.ts",
   "keywords": [
     "pi-package",
@@ -22,7 +22,11 @@
   "homepage": "https://github.com/Josephxcx/pi-learn#readme",
   "license": "MIT",
   "scripts": {
-    "postinstall": "node scripts/check-deps.js"
+    "test": "node --test tests/*.test.ts",
+    "typecheck": "tsc --noEmit",
+    "check": "npm run typecheck && npm test",
+    "check:deps": "node scripts/check-deps.js",
+    "check:package": "npm pack --dry-run"
   },
   "pi": {
     "extensions": [
@@ -33,8 +37,36 @@
     ]
   },
   "peerDependencies": {
-    "@earendil-works/pi-coding-agent": "*",
-    "@juicesharp/rpiv-ask-user-question": "*",
-    "typebox": "*"
+    "@earendil-works/pi-coding-agent": ">=0.85.1 <0.86.0 || >=1.1.0 <1.2.0"
+  },
+  "type": "module",
+  "engines": {
+    "node": ">=22.19.0"
+  },
+  "files": [
+    "extensions/",
+    "skills/",
+    "examples/",
+    "docs/teaching-design.md",
+    "docs/exam-context.md",
+    "docs/technical-guide.md",
+    "scripts/check-deps.js",
+    "README.md",
+    "LICENSE"
+  ],
+  "peerDependenciesMeta": {
+    "@earendil-works/pi-coding-agent": {
+      "optional": true
+    }
+  },
+  "dependencies": {
+    "@resvg/resvg-js": "^2.6.2",
+    "saxes": "^6.0.0",
+    "typebox": "1.3.27"
+  },
+  "devDependencies": {
+    "@earendil-works/pi-coding-agent": "1.1.0",
+    "@types/node": "^22.19.0",
+    "typescript": "~5.9.3"
   }
 }

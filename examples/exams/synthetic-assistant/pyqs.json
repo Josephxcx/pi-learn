@@ -1,0 +1,146 @@
+{
+  "schemaVersion": 1,
+  "examId": "synthetic-assistant",
+  "papers": [
+    {
+      "id": "synthetic-2024-paper-ii",
+      "paperName": "Paper II: Synthetic Computing",
+      "year": 2024,
+      "complete": true,
+      "provenance": {
+        "sourceLabel": "Synthetic example, not real PYQs or official syllabus",
+        "sourcePath": "synthetic/2024-paper-ii-complete"
+      }
+    },
+    {
+      "id": "synthetic-2025-paper-ii",
+      "paperName": "Paper II: Synthetic Computing",
+      "year": 2025,
+      "complete": true,
+      "provenance": {
+        "sourceLabel": "Synthetic example, not real PYQs or official syllabus",
+        "sourcePath": "synthetic/2025-paper-ii-complete"
+      }
+    },
+    {
+      "id": "synthetic-undated-paper-ii-fragment",
+      "paperName": "Paper II: Synthetic Computing",
+      "complete": false,
+      "provenance": {
+        "sourceLabel": "Synthetic example, not real PYQs or official syllabus",
+        "sourcePath": "synthetic/undated-paper-ii-fragment"
+      }
+    }
+  ],
+  "questions": [
+    {
+      "id": "synthetic-2024-q1-booklet-a",
+      "sourceQuestionId": "synthetic-primary-key-question",
+      "paperId": "synthetic-2024-paper-ii",
+      "marks": 2,
+      "subtopicId": "database-keys",
+      "mappingStatus": "explicit",
+      "questionText": "In a fictional register, each row has a unique record_id. Explain why record_id can serve as the primary key.",
+      "provenance": {
+        "sourceLabel": "Synthetic example, not real PYQs or official syllabus",
+        "sourcePath": "synthetic/2024-paper-ii-booklet-a",
+        "questionNumber": "1"
+      }
+    },
+    {
+      "id": "synthetic-2024-q1-booklet-b-copy",
+      "sourceQuestionId": "synthetic-primary-key-question",
+      "paperId": "synthetic-2024-paper-ii",
+      "marks": 2,
+      "subtopicId": "database-keys",
+      "mappingStatus": "explicit",
+      "questionText": "In a fictional register, each row has a unique record_id. Explain why record_id can serve as the primary key.",
+      "provenance": {
+        "sourceLabel": "Synthetic example, not real PYQs or official syllabus",
+        "sourcePath": "synthetic/2024-paper-ii-booklet-b",
+        "questionNumber": "3"
+      }
+    },
+    {
+      "id": "synthetic-2024-q2-marks-unknown",
+      "sourceQuestionId": "synthetic-2024-filter-question",
+      "paperId": "synthetic-2024-paper-ii",
+      "subtopicId": "sql-filters",
+      "mappingStatus": "inferred",
+      "questionText": "For fictional records with status values open, closed and open, which rows satisfy WHERE status = 'open'?",
+      "provenance": {
+        "sourceLabel": "Synthetic example, not real PYQs or official syllabus",
+        "sourcePath": "synthetic/2024-paper-ii-booklet-a",
+        "questionNumber": "2"
+      }
+    },
+    {
+      "id": "synthetic-2024-q3-ambiguous",
+      "sourceQuestionId": "synthetic-2024-ambiguous-question",
+      "paperId": "synthetic-2024-paper-ii",
+      "marks": 2,
+      "mappingStatus": "ambiguous",
+      "candidateSubtopicIds": ["sql-filters", "table-joins"],
+      "questionText": "Explain how selecting certain rows relates to matching records across two fictional tables.",
+      "provenance": {
+        "sourceLabel": "Synthetic example, not real PYQs or official syllabus",
+        "sourcePath": "synthetic/2024-paper-ii-booklet-a",
+        "questionNumber": "3"
+      }
+    },
+    {
+      "id": "synthetic-2025-q1-legitimate-repeat",
+      "sourceQuestionId": "synthetic-primary-key-question",
+      "paperId": "synthetic-2025-paper-ii",
+      "marks": 2,
+      "subtopicId": "database-keys",
+      "mappingStatus": "explicit",
+      "questionText": "In a fictional register, each row has a unique record_id. Explain why record_id can serve as the primary key.",
+      "provenance": {
+        "sourceLabel": "Synthetic example, not real PYQs or official syllabus",
+        "sourcePath": "synthetic/2025-paper-ii",
+        "questionNumber": "1"
+      }
+    },
+    {
+      "id": "synthetic-2025-q2",
+      "sourceQuestionId": "synthetic-2025-filter-question",
+      "paperId": "synthetic-2025-paper-ii",
+      "marks": 2,
+      "subtopicId": "sql-filters",
+      "mappingStatus": "explicit",
+      "questionText": "A fictional table contains quantities 2, 5 and 8. Which quantities are returned by SELECT quantity FROM stock WHERE quantity > 4?",
+      "provenance": {
+        "sourceLabel": "Synthetic example, not real PYQs or official syllabus",
+        "sourcePath": "synthetic/2025-paper-ii",
+        "questionNumber": "2"
+      }
+    },
+    {
+      "id": "synthetic-2025-q3",
+      "sourceQuestionId": "synthetic-2025-join-question",
+      "paperId": "synthetic-2025-paper-ii",
+      "marks": 2,
+      "subtopicId": "table-joins",
+      "mappingStatus": "explicit",
+      "questionText": "Two fictional tables share record_id values 1 and 2. Explain how an inner join on record_id pairs their matching rows.",
+      "provenance": {
+        "sourceLabel": "Synthetic example, not real PYQs or official syllabus",
+        "sourcePath": "synthetic/2025-paper-ii",
+        "questionNumber": "3"
+      }
+    },
+    {
+      "id": "synthetic-undated-q1-unmatched",
+      "sourceQuestionId": "synthetic-undated-unmatched-question",
+      "paperId": "synthetic-undated-paper-ii-fragment",
+      "mappingStatus": "unmatched",
+      "questionText": "Which unit of length appears on a fictional office ruler?",
+      "provenance": {
+        "sourceLabel": "Synthetic example, not real PYQs or official syllabus",
+        "sourcePath": "synthetic/undated-paper-ii-fragment",
+        "questionNumber": "1"
+      }
+    }
+  ]
+}

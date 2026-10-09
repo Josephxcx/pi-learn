@@ -1,86 +1,45 @@
-/**
- * Pure Mathematical Engine for Tri-Vector Curriculum Scoring & Confidence Gating
- *
- * Implements:
- * 1. Exam Priority Score (0-100)
- * 2. Foundation Score (0-100)
- * 3. Study Efficiency Score (0-100)
- * 4. Two-Layer Badge Attribution
- * 5. Evidence Sufficiency / Confidence Assessment
- */
-
+/** Transparent prioritization heuristics. Scores are neither exam probabilities nor predicted marks. */
 import type {
-  ActionAnchor,
-  EvidenceBadge,
-  ExamTaxonomy,
-  PYQItem,
-  PrioritizedSubtopic,
-  SubtopicNode,
-  SyllabusUnit,
-  TriVectorMetrics,
-  TriVectorScore,
-} from "./prioritization-types";
+  ActionAnchor, EvidenceBadge, ExamTaxonomy, PYQDataset, PYQItem, PrioritizedSubtopic,
+  SubtopicNode, SyllabusUnit, TriVectorMetrics, TriVectorScore,
+} from "./prioritization-types.ts";
+import { deduplicateQuestions, paperIdentity, validateDependencyUnits, validateExamTaxonomy, validatePYQDataset } from "./prioritization-validation.ts";
 
-function clamp(value: number, min = 0, max = 100): number {
-  return Math.min(max, Math.max(min, Math.round(value * 10) / 10));
-}
+function round(value: number): number { return Math.round(value * 10) / 10; }
+function clamp(value: number, min = 0, max = 100): number { return Math.min(max, Math.max(min, round(value))); }
 
-/**
- * Computes downstream transitive dependents for each subtopic in a DAG.
- * Returns a map of subtopicId -> array of { dependentId, distance }.
- */
+/** Validate the DAG and count each transitive dependent once, at its shortest distance. */
 export function buildDependencyGraph(units: SyllabusUnit[]): Map<string, Array<{ id: string; distance: number }>> {
-  const downstreamMap = new Map<string, Array<{ id: string; distance: number }>>();
-  const allSubtopics = new Map<string, SubtopicNode>();
-
-  // Index all subtopics
-  for (const unit of units) {
-    for (const sub of unit.subtopics) {
-      allSubtopics.set(sub.id, sub);
-      downstreamMap.set(sub.id, []);
-    }
+  validateDependencyUnits(units);
+  const direct = new Map<string, string[]>();
+  for (const unit of units) for (const sub of unit.subtopics) direct.set(sub.id, []);
+  for (const unit of units) for (const sub of unit.subtopics) {
+    for (const prerequisite of sub.prerequisites) direct.get(prerequisite)!.push(sub.id);
   }
-
-  // Build direct forward edges (prerequisite -> dependent)
-  const directDependents = new Map<string, string[]>();
-  for (const [subId, sub] of allSubtopics.entries()) {
-    for (const prereqId of sub.prerequisites) {
-      if (!directDependents.has(prereqId)) {
-        directDependents.set(prereqId, []);
-      }
-      directDependents.get(prereqId)!.push(subId);
-    }
-  }
-
-  // Compute transitive closure with breadth-first search to find shortest distance
-  for (const rootId of allSubtopics.keys()) {
-    const visited = new Map<string, number>();
-    const queue: Array<{ id: string; dist: number }> = [{ id: rootId, dist: 0 }];
-
-    while (queue.length > 0) {
-      const { id: currentId, dist } = queue.shift()!;
-      const children = directDependents.get(currentId) || [];
-
-      for (const childId of children) {
-        if (!visited.has(childId)) {
-          visited.set(childId, dist + 1);
-          queue.push({ id: childId, dist: dist + 1 });
-        }
+  const downstream = new Map<string, Array<{ id: string; distance: number }>>();
+  for (const root of direct.keys()) {
+    const seen = new Set<string>();
+    const queue = [{ id: root, distance: 0 }];
+    const descendants: Array<{ id: string; distance: number }> = [];
+    for (let index = 0; index < queue.length; index++) {
+      const current = queue[index]!;
+      for (const id of direct.get(current.id) ?? []) {
+        if (seen.has(id)) continue;
+        seen.add(id);
+        const next = { id, distance: current.distance + 1 };
+        queue.push(next); descendants.push(next);
       }
     }
-
-    const dependentsList: Array<{ id: string; distance: number }> = [];
-    for (const [depId, distance] of visited.entries()) {
-      dependentsList.push({ id: depId, distance });
-    }
-    downstreamMap.set(rootId, dependentsList);
+    downstream.set(root, descendants);
   }
-
-  return downstreamMap;
+  return downstream;
 }
 
 /**
- * Calculates the Exam Priority Score (0-100)
+ * Fixed, uncalibrated weights: 35% declared weight, 40% known recency-weighted marks,
+ * 25% observed paper coverage. The marks component saturates at 8 weighted marks.
+ * Unit weight is a shared unit-level prior, never an allocated subtopic mark estimate.
+ * Missing components contribute no evidence; absence of evidence is not proof of low importance.
  */
 export function calculateExamPriority(
   subtopic: SubtopicNode,
@@ -88,158 +47,89 @@ export function calculateExamPriority(
   taxonomy: ExamTaxonomy,
   subtopicPYQs: PYQItem[],
   totalAnalyzedPapers: number,
-  currentYear: number = new Date().getFullYear()
-): { score: number; metrics: Partial<TriVectorMetrics> } {
-  // 1. Official Unit Weightage Component (0 - 100)
-  // Normalized relative to the highest-weight unit in the exam
-  const maxUnitMarks = Math.max(
-    ...taxonomy.units.map((u) => u.officialMarks || 1),
-    1
-  );
-  const normalizedOfficial = Math.min(100, (unit.officialMarks / maxUnitMarks) * 100);
+  currentYear = new Date().getUTCFullYear(),
+  identifyPaper: (question: PYQItem) => string | undefined = paperIdentity,
+): { score: number; metrics: TriVectorMetrics } {
+  const evidenceLimitations: string[] = [];
+  const hasOfficialWeightage = subtopic.officialMarks !== undefined || unit.officialMarks !== undefined;
+  const hasSubtopicWeight = subtopic.officialMarks !== undefined;
+  const declaredMarks = subtopic.officialMarks ?? unit.officialMarks;
+  const comparableMarks = hasSubtopicWeight
+    ? taxonomy.units.flatMap(u => u.subtopics.map(s => s.officialMarks ?? 0))
+    : taxonomy.units.map(u => u.officialMarks ?? 0);
+  const maxDeclaredMarks = Math.max(0, ...comparableMarks);
+  const officialComponent = declaredMarks !== undefined && maxDeclaredMarks > 0 ? 100 * declaredMarks / maxDeclaredMarks : 0;
+  if (!hasOfficialWeightage) evidenceLimitations.push("Official weightage is unknown; no weightage was invented.");
+  else if (!hasSubtopicWeight) evidenceLimitations.push("Official marks apply to the whole unit; its normalized weight is shared as a prior, not allocated to this subtopic.");
 
-  // If no PYQs exist (Cold-Start / New Syllabus)
-  if (!subtopicPYQs || subtopicPYQs.length === 0) {
-    return {
-      score: clamp(normalizedOfficial * 0.75),
-      metrics: {
-        totalPYQs: 0,
-        decayedMarks: 0,
-        consistencyPct: 0,
-        yearsCovered: 0,
-        hasOfficialWeightage: unit.officialMarks > 0,
-      },
-    };
-  }
-
-  // 2. Recency-Decayed Marks Sum
-  const lambda = 0.15;
-  let decayedMarks = 0;
-  let totalRawMarks = 0;
-  const distinctYears = new Set<number>();
-
+  const years = new Set<number>();
+  const papers = new Set<string>();
+  let decayedMarks = 0, knownYearQuestions = 0, knownMarksQuestions = 0, inferredMappingQuestions = 0;
+  let missingPaperIdentityQuestions = 0;
   for (const q of subtopicPYQs) {
-    const yearDiff = Math.max(0, currentYear - (q.year || currentYear));
-    const recencyFactor = Math.max(0.35, Math.exp(-lambda * yearDiff));
-    const questionMarks = q.marks > 0 ? q.marks : 1;
-
-    decayedMarks += questionMarks * recencyFactor;
-    totalRawMarks += questionMarks;
-    distinctYears.add(q.year);
+    if (q.year !== undefined) { years.add(q.year); knownYearQuestions++; }
+    if (q.marks !== undefined) knownMarksQuestions++;
+    const identity = identifyPaper(q);
+    if (identity) papers.add(identity); else missingPaperIdentityQuestions++;
+    if (q.mappingStatus === "inferred") inferredMappingQuestions++;
+    if (q.year !== undefined && q.marks !== undefined) {
+      decayedMarks += q.marks * Math.exp(-0.15 * Math.max(0, currentYear - q.year));
+    }
   }
+  if (subtopicPYQs.length === 0) evidenceLimitations.push("No mapped PYQs were supplied for this topic; this does not establish a new syllabus or low exam importance.");
+  if (knownYearQuestions < subtopicPYQs.length || knownMarksQuestions < subtopicPYQs.length) {
+    evidenceLimitations.push("Recency-weighted marks exclude questions with unknown year or marks; zero is a known value.");
+  }
+  if (missingPaperIdentityQuestions) evidenceLimitations.push(`${missingPaperIdentityQuestions} mapped question(s) have unknown paper identity and are excluded from paper coverage.`);
+  if (inferredMappingQuestions) evidenceLimitations.push(`${inferredMappingQuestions} topic mapping(s) are inferred and need source review.`);
+  if (totalAnalyzedPapers === 0) evidenceLimitations.push("Paper coverage is unknown because no paper identities or declared paper count were supplied.");
+  if (subtopic.cognitiveFriction === undefined) evidenceLimitations.push("Study effort is unknown; the effort adjustment is neutral.");
 
-  // Scale decayed marks to 0-100 (in state exams, 8+ decayed marks in a subtopic is an anchor)
-  const normalizedDecayed = Math.min(100, (decayedMarks / 8.0) * 100);
-
-  // 3. Cross-Paper Consistency Percentage
-  const numPapers = Math.max(1, totalAnalyzedPapers, distinctYears.size);
-  const consistencyPct = (distinctYears.size / numPapers) * 100;
-
-  // Composite Exam Priority Formula (Official weight + Empirical PYQ + Consistency)
-  const examScore = clamp(
-    0.35 * normalizedOfficial +
-    0.40 * normalizedDecayed +
-    0.25 * consistencyPct
-  );
-
-  return {
-    score: examScore,
-    metrics: {
-      totalPYQs: subtopicPYQs.length,
-      decayedMarks: Math.round(decayedMarks * 10) / 10,
-      consistencyPct: Math.round(consistencyPct),
-      yearsCovered: distinctYears.size,
-      hasOfficialWeightage: unit.officialMarks > 0,
-    },
-  };
+  const consistencyPct = totalAnalyzedPapers > 0 ? 100 * papers.size / totalAnalyzedPapers : 0;
+  const score = clamp(0.35 * officialComponent + 0.40 * Math.min(100, decayedMarks / 8 * 100) + 0.25 * consistencyPct);
+  return { score, metrics: {
+    totalPYQs: subtopicPYQs.length, decayedMarks: round(decayedMarks), consistencyPct: round(consistencyPct),
+    downstreamMarks: 0, downstreamPriorityValue: 0, transitivePrereqCount: 0, yearsCovered: years.size,
+    hasOfficialWeightage, analyzedPapers: totalAnalyzedPapers, papersWithTopic: papers.size,
+    knownYearQuestions, knownMarksQuestions, missingPaperIdentityQuestions, inferredMappingQuestions, evidenceLimitations,
+  } };
 }
 
-/**
- * Calculates Foundation Score (0-100) based on downstream DAG enablement
- */
+/** Downstream value is discounted priority points, never exam marks. */
 export function calculateFoundationScore(
   subtopicId: string,
   downstreamMap: Map<string, Array<{ id: string; distance: number }>>,
   examPriorityMap: Map<string, number>,
-  totalSubtopicsCount: number
-): { score: number; downstreamMarks: number } {
-  const dependents = downstreamMap.get(subtopicId) || [];
-
-  if (dependents.length === 0) {
-    return { score: 12, downstreamMarks: 0 }; // Baseline self-contained leaf node
-  }
-
-  // 1. Direct Out-degree Centrality (0 - 100)
-  const directCount = dependents.filter((d) => d.distance === 1).length;
-  const outDegreeScore = Math.min(100, directCount * 35); // 1 direct dep = 35, 2 deps = 70, 3+ = 100
-
-  // 2. Cumulative Downstream Exam Value Discounted by Distance
-  let downstreamMarks = 0;
-  for (const dep of dependents) {
-    const depExamScore = examPriorityMap.get(dep.id) || 50;
-    downstreamMarks += depExamScore / dep.distance;
-  }
-
-  const downstreamMarksScore = Math.min(100, (downstreamMarks / 80) * 100);
-
-  const foundationScore = clamp(0.40 * outDegreeScore + 0.60 * downstreamMarksScore);
-
+  totalSubtopicsCount: number,
+): { score: number; downstreamMarks: number; downstreamPriorityValue: number } {
+  const dependents = downstreamMap.get(subtopicId) ?? [];
+  const directCount = dependents.filter(d => d.distance === 1).length;
+  const directCoverage = totalSubtopicsCount > 1 ? directCount / (totalSubtopicsCount - 1) * 100 : 0;
+  const value = dependents.reduce((sum, dependent) => sum + (examPriorityMap.get(dependent.id) ?? 0) / dependent.distance, 0);
+  const downstreamPriorityValue = round(value);
   return {
-    score: foundationScore,
-    downstreamMarks: Math.round(downstreamMarks * 10) / 10,
+    score: clamp(0.40 * directCoverage + 0.60 * Math.min(100, value / 80 * 100)),
+    downstreamMarks: downstreamPriorityValue, downstreamPriorityValue,
   };
 }
 
-/**
- * Calculates Study Efficiency Score (0-100)
- */
-export function calculateStudyEfficiency(
-  examScore: number,
-  foundationScore: number,
-  cognitiveFriction: number
-): number {
-  // Safe friction bounds (1.0 to 5.0, default 2.5)
-  const friction = Math.max(1.0, Math.min(5.0, cognitiveFriction || 2.5));
-
-  // Effective payoff considers direct exam yield plus foundational leverage
-  const effectivePayoff = Math.max(examScore, 0.65 * foundationScore);
-
-  // Normalization relative to baseline friction 2.5
-  const normalizedFriction = friction / 2.5;
-
-  return clamp((effectivePayoff / normalizedFriction));
+/** A user estimate adjusts priority; it does not estimate learning time or marks/hour. */
+export function calculateStudyEfficiency(examScore: number, foundationScore: number, cognitiveFriction?: number): number {
+  const payoff = Math.max(examScore, 0.65 * foundationScore);
+  if (cognitiveFriction === undefined) return clamp(payoff);
+  if (!Number.isFinite(cognitiveFriction) || cognitiveFriction < 1 || cognitiveFriction > 5) throw new Error("cognitiveFriction must be between 1 and 5");
+  return clamp(payoff * 2.5 / cognitiveFriction);
 }
 
-/**
- * Calculates Evidence Sufficiency (Confidence Level: high, moderate, speculative)
- */
+/** A descriptive evidence sufficiency index, not statistical confidence or answer likelihood. */
 export function calculateConfidence(
-  yearsCovered: number,
-  totalPYQs: number,
-  hasOfficialWeightage: boolean
+  yearsCovered: number, totalPYQs: number, hasOfficialWeightage: boolean, qualityCap = 1,
 ): { level: "high" | "moderate" | "speculative"; score: number } {
-  const yearsScore = Math.min(1.0, yearsCovered / 5);
-  const pyqScore = Math.min(1.0, totalPYQs / 10);
-  const weightScore = hasOfficialWeightage ? 1.0 : 0.0;
-
-  const confidenceScore = 0.45 * yearsScore + 0.35 * pyqScore + 0.20 * weightScore;
-
-  let level: "high" | "moderate" | "speculative" = "speculative";
-  if (confidenceScore >= 0.70) {
-    level = "high";
-  } else if (confidenceScore >= 0.38) {
-    level = "moderate";
-  }
-
-  return {
-    level,
-    score: Math.round(confidenceScore * 100) / 100,
-  };
+  const index = 0.45 * Math.min(1, yearsCovered / 5) + 0.35 * Math.min(1, totalPYQs / 10) + 0.20 * Number(hasOfficialWeightage);
+  const score = Math.round(Math.min(index, qualityCap) * 100) / 100;
+  return { level: score >= 0.70 ? "high" : score >= 0.38 ? "moderate" : "speculative", score };
 }
 
-/**
- * Assigns Primary Action Anchor based on absolute thresholds
- */
 export function assignActionAnchor(compositeScore: number): ActionAnchor {
   if (compositeScore >= 85) return "Must Study";
   if (compositeScore >= 70) return "High Priority";
@@ -248,158 +138,116 @@ export function assignActionAnchor(compositeScore: number): ActionAnchor {
   return "Lower";
 }
 
-/**
- * Determines Secondary Orthogonal Evidence Badges
- */
+/** Trend and syllabus-change badges require evidence this importer does not collect. */
 export function determineEvidenceBadges(
-  subtopic: SubtopicNode,
-  unit: SyllabusUnit,
-  score: {
-    examPriorityScore: number;
-    foundationScore: number;
-    studyEfficiencyScore: number;
-    metrics: TriVectorMetrics;
-  }
+  _subtopic: SubtopicNode, _unit: SyllabusUnit,
+  score: Pick<TriVectorScore, "examPriorityScore" | "foundationScore" | "studyEfficiencyScore" | "metrics">,
 ): EvidenceBadge[] {
   const badges: EvidenceBadge[] = [];
-
-  // Core Foundation
-  if (score.foundationScore >= 75) {
-    badges.push("Core Foundation");
-  }
-
-  // Frequent Anchor
-  if (score.metrics.consistencyPct >= 75 && score.metrics.totalPYQs >= 4) {
-    badges.push("Frequent Anchor");
-  }
-
-  // High Marks
-  if (unit.officialMarks >= 30 || (score.metrics.totalPYQs > 0 && score.metrics.decayedMarks / score.metrics.totalPYQs >= 3.5)) {
-    badges.push("High Marks");
-  }
-
-  // Rising Trend
-  if (score.metrics.yearsCovered >= 2 && score.metrics.totalPYQs >= 3) {
-    // If recent paper concentration is significant
-    badges.push("Rising Trend");
-  }
-
-  // Low Return
-  if (score.studyEfficiencyScore <= 38 && subtopic.cognitiveFriction >= 3.5) {
-    badges.push("Low Return");
-  }
-
-  // New Syllabus (Cold start)
-  if (score.metrics.totalPYQs === 0) {
-    badges.push("New Syllabus");
-  }
-
+  if (score.foundationScore >= 75) badges.push("Core Foundation");
+  if (score.metrics.totalPYQs === 0) badges.push("No Mapped PYQs");
   return badges;
 }
 
-/**
- * Main Scoring Engine: Prioritizes an entire syllabus taxonomy against PYQ evidence
- */
+/** Validate legacy arrays without inventing years, marks or source identities. */
+function normalizeEvidence(taxonomy: ExamTaxonomy, evidence: PYQItem[] | PYQDataset): PYQDataset {
+  if (!Array.isArray(evidence)) return validatePYQDataset(evidence, taxonomy);
+  const papers = new Map<string, { id: string; paperName?: string; year?: number }>();
+  for (const question of evidence) {
+    if (!question.paperId) continue;
+    const existing = papers.get(question.paperId);
+    if (existing && ((question.year !== undefined && existing.year !== undefined && question.year !== existing.year)
+      || (question.paperName !== undefined && existing.paperName !== undefined && question.paperName !== existing.paperName))) {
+      throw new Error(`Conflicting metadata for paper ${question.paperId}`);
+    }
+    papers.set(question.paperId, { id: question.paperId, paperName: question.paperName ?? existing?.paperName, year: question.year ?? existing?.year });
+  }
+  const result = validatePYQDataset({ schemaVersion: 1, examId: taxonomy.examId,
+    papers: [...papers.values()].map(paper => ({ ...paper, paperName: paper.paperName ?? `Unknown paper name (${paper.id})` })),
+    questions: deduplicateQuestions(evidence) }, taxonomy);
+  // A placeholder required by the manifest schema is not observed question metadata.
+  for (const question of result.questions) {
+    if (question.paperId && papers.get(question.paperId)?.paperName === undefined) question.paperName = undefined;
+  }
+  return result;
+}
+
+/** Reconcile name/year aliases only when they identify exactly one canonical paper. */
+function makePaperIdentifier(dataset: PYQDataset): (question: PYQItem) => string | undefined {
+  const aliases = new Map<string, string[]>();
+  for (const paper of dataset.papers) {
+    if (paper.year === undefined) continue;
+    const alias = paperIdentity({ id: paper.id, examId: dataset.examId, paperName: paper.paperName, year: paper.year, questionText: "" })!;
+    const list = aliases.get(alias) ?? [];
+    list.push(`${dataset.examId}:id:${paper.id}`); aliases.set(alias, list);
+  }
+  return question => {
+    const identity = paperIdentity(question);
+    if (!identity || question.paperId) return identity;
+    const matches = aliases.get(identity);
+    return matches === undefined ? identity : matches.length === 1 ? matches[0] : undefined;
+  };
+}
+
+/** Actual identified papers are the default denominator; a caller-supplied count must be explicit. */
 export function prioritizeTaxonomy(
-  taxonomy: ExamTaxonomy,
-  pyqItems: PYQItem[],
-  totalAnalyzedPapers = 5
+  taxonomy: ExamTaxonomy, evidence: PYQItem[] | PYQDataset, totalAnalyzedPapers?: number,
 ): PrioritizedSubtopic[] {
+  validateExamTaxonomy(taxonomy);
   const downstreamMap = buildDependencyGraph(taxonomy.units);
-  const totalSubtopicsCount = taxonomy.units.reduce((acc, u) => acc + u.subtopics.length, 0);
-
-  // Group PYQs by subtopicId
-  const pyqBySubtopic = new Map<string, PYQItem[]>();
-  for (const pyq of pyqItems) {
-    if (!pyqBySubtopic.has(pyq.subtopicId)) {
-      pyqBySubtopic.set(pyq.subtopicId, []);
-    }
-    pyqBySubtopic.get(pyq.subtopicId)!.push(pyq);
+  const dataset = normalizeEvidence(taxonomy, evidence);
+  const identifyPaper = makePaperIdentifier(dataset);
+  const observedPapers = new Set(dataset.papers.map(p => `${dataset.examId}:id:${p.id}`));
+  for (const question of dataset.questions) {
+    const identity = identifyPaper(question); if (identity) observedPapers.add(identity);
   }
-
-  // Pass 1: Calculate preliminary Exam Priority Scores
-  const examScoreMap = new Map<string, number>();
-  const preliminaryMetrics = new Map<string, Partial<TriVectorMetrics>>();
-
-  for (const unit of taxonomy.units) {
-    for (const sub of unit.subtopics) {
-      const qList = pyqBySubtopic.get(sub.id) || [];
-      const { score, metrics } = calculateExamPriority(sub, unit, taxonomy, qList, totalAnalyzedPapers);
-      examScoreMap.set(sub.id, score);
-      preliminaryMetrics.set(sub.id, metrics);
-    }
+  if (totalAnalyzedPapers !== undefined && (!Number.isInteger(totalAnalyzedPapers) || totalAnalyzedPapers < observedPapers.size || totalAnalyzedPapers < 0)) {
+    throw new Error(`totalAnalyzedPapers must be an integer at least ${observedPapers.size}, the number of identified papers`);
   }
-
-  // Pass 2: Calculate Foundation & Efficiency Scores, Composite, and Badges
-  const prioritizedList: PrioritizedSubtopic[] = [];
-
-  for (const unit of taxonomy.units) {
-    for (const sub of unit.subtopics) {
-      const examScore = examScoreMap.get(sub.id) || 40;
-      const metricsPartial = preliminaryMetrics.get(sub.id)!;
-
-      const { score: foundationScore, downstreamMarks } = calculateFoundationScore(
-        sub.id,
-        downstreamMap,
-        examScoreMap,
-        totalSubtopicsCount
-      );
-
-      const studyEfficiencyScore = calculateStudyEfficiency(examScore, foundationScore, sub.cognitiveFriction);
-
-      // Composite Decision Score
-      // Core principle: A topic is prioritized if it has high direct exam value OR high foundational importance
-      const basePriority = Math.max(examScore, 0.85 * foundationScore);
-      // Efficiency provides an uplift or minor penalty (0.90 to 1.10)
-      const efficiencyMultiplier = 0.90 + 0.20 * (studyEfficiencyScore / 100);
-      const compositeScore = clamp(basePriority * efficiencyMultiplier);
-
-      const fullMetrics: TriVectorMetrics = {
-        totalPYQs: metricsPartial.totalPYQs || 0,
-        decayedMarks: metricsPartial.decayedMarks || 0,
-        consistencyPct: metricsPartial.consistencyPct || 0,
-        downstreamMarks,
-        transitivePrereqCount: sub.prerequisites.length,
-        yearsCovered: metricsPartial.yearsCovered || 0,
-        hasOfficialWeightage: unit.officialMarks > 0,
-      };
-
-      const confidence = calculateConfidence(
-        fullMetrics.yearsCovered,
-        fullMetrics.totalPYQs,
-        fullMetrics.hasOfficialWeightage
-      );
-
-      const actionAnchor = assignActionAnchor(compositeScore);
-
-      const scoreObj: TriVectorScore = {
-        examPriorityScore: examScore,
-        foundationScore,
-        studyEfficiencyScore,
-        compositeScore,
-        actionAnchor,
-        evidenceBadges: [],
-        confidence: confidence.level,
-        confidenceScore: confidence.score,
-        metrics: fullMetrics,
-      };
-
-      scoreObj.evidenceBadges = determineEvidenceBadges(sub, unit, scoreObj);
-
-      prioritizedList.push({
-        subtopic: sub,
-        unit: {
-          id: unit.id,
-          unitNumber: unit.unitNumber,
-          title: unit.title,
-          paper: unit.paper,
-          officialMarks: unit.officialMarks,
-        },
-        score: scoreObj,
-      });
-    }
+  const paperCount = totalAnalyzedPapers ?? observedPapers.size;
+  const globalLimitations = ["Scores use an uncalibrated heuristic, not exam predictions. PYQ marks decay by exp(-0.15 × age); the marks component saturates at 8 weighted marks."];
+  const incompleteCoverage = dataset.papers.length === 0 || dataset.papers.some(p => p.complete !== true) || observedPapers.size !== dataset.papers.length;
+  if (incompleteCoverage) globalLimitations.push("Paper imports are partial or completeness is unverified; observed coverage does not prove absence from other papers.");
+  if (totalAnalyzedPapers !== undefined && totalAnalyzedPapers > observedPapers.size) globalLimitations.push("The denominator includes caller-declared papers without source identities; completeness cannot be verified.");
+  const unassignedCount = dataset.questions.filter(q => !q.subtopicId).length;
+  if (unassignedCount) globalLimitations.push(`${unassignedCount} ambiguous or unmatched question(s) remain unassigned and may affect topic coverage.`);
+  const byTopic = new Map<string, PYQItem[]>();
+  for (const question of dataset.questions) {
+    if (!question.subtopicId) continue;
+    const list = byTopic.get(question.subtopicId) ?? [];
+    list.push(question); byTopic.set(question.subtopicId, list);
   }
-
-  // Sort by composite score descending (highest priority first)
-  return prioritizedList.sort((a, b) => b.score.compositeScore - a.score.compositeScore);
+  const preliminary = new Map<string, ReturnType<typeof calculateExamPriority>>();
+  const examScores = new Map<string, number>();
+  for (const unit of taxonomy.units) for (const subtopic of unit.subtopics) {
+    const result = calculateExamPriority(subtopic, unit, taxonomy, byTopic.get(subtopic.id) ?? [], paperCount, new Date().getUTCFullYear(), identifyPaper);
+    preliminary.set(subtopic.id, result); examScores.set(subtopic.id, result.score);
+  }
+  const prerequisites = new Map<string, number>();
+  for (const dependents of downstreamMap.values()) for (const dependent of dependents) {
+    prerequisites.set(dependent.id, (prerequisites.get(dependent.id) ?? 0) + 1);
+  }
+  const prioritized: PrioritizedSubtopic[] = [];
+  for (const unit of taxonomy.units) for (const subtopic of unit.subtopics) {
+    const { score: examPriorityScore, metrics } = preliminary.get(subtopic.id)!;
+    const foundation = calculateFoundationScore(subtopic.id, downstreamMap, examScores, examScores.size);
+    metrics.downstreamMarks = foundation.downstreamPriorityValue;
+    metrics.downstreamPriorityValue = foundation.downstreamPriorityValue;
+    metrics.transitivePrereqCount = prerequisites.get(subtopic.id) ?? 0;
+    metrics.evidenceLimitations.push(...globalLimitations);
+    let qualityCap = incompleteCoverage || unassignedCount > 0 || paperCount !== observedPapers.size ? 0.69 : 1;
+    if (metrics.missingPaperIdentityQuestions || metrics.inferredMappingQuestions || metrics.knownYearQuestions < metrics.totalPYQs || metrics.knownMarksQuestions < metrics.totalPYQs) qualityCap = 0.37;
+    const confidence = calculateConfidence(metrics.yearsCovered, metrics.totalPYQs, metrics.hasOfficialWeightage, qualityCap);
+    const studyEfficiencyScore = calculateStudyEfficiency(examPriorityScore, foundation.score, subtopic.cognitiveFriction);
+    const basePriority = Math.max(examPriorityScore, 0.85 * foundation.score);
+    const adjustment = subtopic.cognitiveFriction === undefined ? 1 : 0.90 + 0.20 * studyEfficiencyScore / 100;
+    const compositeScore = clamp(basePriority * adjustment);
+    const score: TriVectorScore = { examPriorityScore, foundationScore: foundation.score, studyEfficiencyScore, compositeScore,
+      actionAnchor: assignActionAnchor(compositeScore), evidenceBadges: [], confidence: confidence.level, confidenceScore: confidence.score, metrics };
+    score.evidenceBadges = determineEvidenceBadges(subtopic, unit, score);
+    // A descriptive frequency badge requires complete, attributable papers and mappings.
+    if (!incompleteCoverage && unassignedCount === 0 && qualityCap === 1 && metrics.analyzedPapers >= 4 && metrics.consistencyPct >= 75 && metrics.totalPYQs >= 4) score.evidenceBadges.push("Frequent Anchor");
+    prioritized.push({ subtopic, unit: { id: unit.id, unitNumber: unit.unitNumber, title: unit.title, paper: unit.paper, officialMarks: unit.officialMarks }, score });
+  }
+  return prioritized.sort((a, b) => b.score.compositeScore - a.score.compositeScore || a.subtopic.id.localeCompare(b.subtopic.id));
 }

@@ -1,0 +1,70 @@
+{
+  "schemaVersion": 1,
+  "examId": "synthetic-assistant",
+  "examTitle": "Synthetic Assistant Examination — fictional import example",
+  "totalMarks": 6,
+  "vaultRelativeDir": "synthetic-assistant",
+  "provenance": {
+    "sourceLabel": "Synthetic example, not real PYQs or official syllabus",
+    "sourcePath": "examples/exams/synthetic-assistant/exam.json"
+  },
+  "profile": {
+    "post": "Synthetic Assistant (fictional)",
+    "authority": "Fictional Learning Demonstration Board",
+    "group": "unknown",
+    "gazettedStatus": "unknown",
+    "recruitmentRoute": "Fictional direct recruitment exercise",
+    "syllabusVersion": "synthetic-v1-2026",
+    "difficultyGuidance": "Demonstration only: explain a definition, work through one small table, then ask one application question. No real recruitment classification or difficulty is implied.",
+    "papers": [
+      {
+        "id": "paper-ii",
+        "title": "Paper II: Synthetic Computing",
+        "marks": 6,
+        "difficultyGuidance": "Use only the three listed computing topics and small fictional tables. These marks and scope are invented for import testing."
+      }
+    ]
+  },
+  "units": [
+    {
+      "id": "computing",
+      "unitNumber": 1,
+      "title": "Working with small tables",
+      "paper": "Paper II: Synthetic Computing",
+      "officialMarks": 6,
+      "subtopics": [
+        {
+          "id": "database-keys",
+          "title": "Database keys",
+          "syllabusScope": "Recognize a primary key and explain why it uniquely identifies a row in a small fictional table.",
+          "officialMarks": 2,
+          "prerequisites": [],
+          "masteryStatus": "pending",
+          "cognitiveFriction": 2
+        },
+        {
+          "id": "sql-filters",
+          "title": "SQL filters",
+          "syllabusScope": "Read a simple SELECT statement with a WHERE condition and identify the returned rows.",
+          "officialMarks": 2,
+          "prerequisites": ["database-keys"],
+          "masteryStatus": "pending",
+          "cognitiveFriction": 2.5
+        },
+        {
+          "id": "table-joins",
+          "title": "Table joins",
+          "syllabusScope": "Match rows from two small tables by a shared key and explain a simple inner join.",
+          "officialMarks": 2,
+          "prerequisites": ["sql-filters"],
+          "masteryStatus": "pending",
+          "cognitiveFriction": 3
+        }
+      ]
+    }
+  ],
+  "metadata": {
+    "synthetic": true,
+    "notice": "All exam names, classifications, syllabus weights, paper sittings and questions in this example are fictional. Missing values in pyqs.json are intentional."
+  }
+}
