@@ -106,3 +106,27 @@ test('verification rejects relative image, script, and CSS dependencies',async()
     for(const name of ['missing-diagram.png','missing-control.js','missing.png']) assert.ok(r.errors.some((e:string)=>e.includes(name)),name);
   }finally{fs.rmSync(dir,{recursive:true,force:true});}
 });
+
+test('text accents and captions remain readable on dark insight panels',async()=>{
+  const browser=await chromium.launch({executablePath,headless:true});
+  const dir=fs.mkdtempSync(path.join(os.tmpdir(),'pi-contrast-test-'));
+  try {
+    const {htmlPath}=saveCompanion({assetsDir:dir,filename:'contrast.html',title:'Contrast',htmlContent:wrap('<aside class="pi-insight"><span class="pi-accent">Key term</span><p class="pi-equation">3/4</p><p class="pi-caption">Supporting explanation</p><a href="#">Explore</a></aside>')});
+    const page=await browser.newPage();
+    await page.setContent(fs.readFileSync(htmlPath,'utf8'));
+    const ratios=await page.evaluate(()=>{
+      const luminance=(rgb:string)=>{
+        const channels=rgb.match(/[\d.]+/g)!.slice(0,3).map(v=>Number(v)/255).map(v=>v<=0.04045?v/12.92:((v+0.055)/1.055)**2.4);
+        return channels[0]*0.2126+channels[1]*0.7152+channels[2]*0.0722;
+      };
+      const panel=document.querySelector('.pi-insight')!;
+      const background=luminance(getComputedStyle(panel).backgroundColor);
+      return [...panel.querySelectorAll('.pi-accent,.pi-equation,.pi-caption,a')].map(el=>{
+        const foreground=luminance(getComputedStyle(el).color);
+        return {selector:el.className||el.tagName,ratio:(Math.max(foreground,background)+0.05)/(Math.min(foreground,background)+0.05)};
+      });
+    });
+    for(const item of ratios) assert.ok(item.ratio>=4.5,`${item.selector} contrast is ${item.ratio.toFixed(2)}:1`);
+    assert.equal(await page.evaluate(()=>getComputedStyle(document.body).backgroundColor),'rgb(250, 247, 239)');
+  }finally{await browser.close();fs.rmSync(dir,{recursive:true,force:true});}
+});

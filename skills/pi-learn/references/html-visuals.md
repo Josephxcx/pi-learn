@@ -11,7 +11,7 @@ Use one companion per concept and link it from the existing lesson. The visual i
 6. Continue the existing terminal active-recall gate. HTML practice never advances the tutor.
 
 ## Visual language
-Warm ivory background, ink headings, cobalt for the active concept, orange for numbered annotations. Serif headings with readable system body text. Use restrained emphasis, generous spacing, and diagrams large enough to read in a narrow pane. Avoid decorative animation. CSS variables: `--pi-paper`, `--pi-ink`, `--pi-cobalt`, `--pi-orange`, `--pi-muted`, `--pi-line`, `--pi-mint`.
+Warm ivory background, ink headings, cobalt for the active concept, orange for numbered annotations. Serif headings with readable system body text. Use restrained emphasis, generous spacing, and diagrams large enough to read in a narrow pane. Avoid decorative animation. CSS variables: `--pi-paper`, `--pi-ink`, `--pi-cobalt`, `--pi-orange`, `--pi-muted`, `--pi-line`, `--pi-mint`. For text use `--pi-text-accent` and `--pi-text-muted`; these switch to light colours inside dark `pi-insight` panels. Reserve cobalt for light-background text and diagram fills.
 
 Classes: `pi-header`, `pi-brand`, `pi-eyebrow`, `pi-accent`, `pi-grid` (responsive columns), `pi-hero`, `pi-diagram` (responsive SVG), `pi-insight`, `pi-number`, `pi-steps`, `pi-step`, `pi-controls`, `pi-secondary`, `pi-caption`, `pi-equation`, `pi-table-scroll`. Wrap wide tables in `pi-table-scroll` so the whole page does not overflow. Use descriptive SVG `<title>`/`<desc>` and readable labels. Diagram topology, geometry, and layout stay topic-specific.
 
